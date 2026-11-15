@@ -10,6 +10,7 @@ os.environ.setdefault("IMG_MODEL", "google/gemini-3-pro-image")
 def clip(s):
     still = f"{D}/still_{s['id']}.png"; out = f"{D}/clip_{s['id']}.mp4"
     if not os.path.exists(still): edit(still, "16:9", B.LOOK + s["still"], [f"{D}/{r}.png" for r in s["refs"]] + ([f"{D}/hero.png"] if os.path.exists(f"{D}/hero.png") else []))
+    if os.environ.get("STILLS_ONLY"): return
     if not os.path.exists(out):
         im = Image.open(still).convert("RGB").resize((1920, 1080), Image.LANCZOS); b = io.BytesIO(); im.save(b, "JPEG", quality=92)
         body = {"model": os.environ.get("VIDEO_MODEL", "google/gemini-omni-1.2-flash"), "prompt": B.RULES + (B.VOICES if s["lines"] else "") + s["action"], "duration": s["dur"], "resolution": os.environ.get("VIDEO_RES", "1080p"),

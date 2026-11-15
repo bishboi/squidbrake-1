@@ -11,12 +11,13 @@ CAST = {  # reference sheets generated once, then passed to every still
 }
 LOOK = ("Photorealistic cinematic film still from a comedy drama, 35mm lens, smoggy hazy Delhi daylight with a warm-grey palette. "
         "The students are exactly the three from the first reference image — KABIR (the lead and hero of the film: the tall man with short dark side-swept hair and a neat short beard, exactly as in the first reference image and in the photos of the last reference image; broad-shouldered, upright, calm and commanding, clearly the leader and the visual focus of the shot, flattering light on his face), MEERA (high ponytail, round black glasses), "
-        "BUNTY (short, chubby, curly hair, mask under his chin) — same faces, same white polo T-shirts (poster print on the chest, small NSUI wordmark, tipped collar, no portrait photo on the shirt), blue jeans. "
+        "BUNTY (short, chubby, curly hair, mask under his chin) — same faces, same white polo T-shirts exactly as in the first reference image: plain sleeves, tipped collar, a bold navy wordmark on the left chest that reads exactly \"NSUI\" (four letters, spelled correctly, sharp), and the lungs poster on the chest whose lettering reads exactly \"Pollution Par Solution\"; no other lettering on the shirts; blue jeans. Frame the shot close enough that the shirt prints are large and legible. "
         "No captions, no subtitles, no extra text unless the scene description asks for a nameplate. ")
 VOICES = ("Voices — KABIR: calm, warm young male voice. MEERA: sharp, sarcastic young female voice. BUNTY: high-pitched, excitable, funny young male voice. "
           "RAMLAL: raspy, lazy old man's voice. GUARD: flat, robotic deadpan male voice. CM: cheerful, over-confident middle-aged woman's voice. ")
 RULES = ("Comedy scene, realistic, clear spoken Hindi dialogue with accurate lip-sync, good comic timing. One continuous shot, no cuts. "
-         "Only the lines given are spoken, exactly as written, in Hindi. Natural ambient sound only, no music, no laughter track, no subtitles or text on screen. ")
+         "Only the lines given are spoken, exactly as written, in Hindi. Natural ambient sound only, no music, no laughter track, no subtitles or text on screen. "
+         "The lettering printed on the T-shirts (NSUI, Pollution Par Solution) and on nameplates stays sharp, stable and unchanged for the whole shot. ")
 
 SCENES = [
  dict(id="c1", dur=12, refs=["cast"], chyron="Pollution का Solution — एक खोज",
@@ -59,14 +60,19 @@ SCENES = [
   action="BUNTY blurts out: \"Temperature?!\" MEERA says slowly, as if explaining to a child: \"मैडम... AQI हवा की quality होती है।\" The CM shrugs cheerfully, picks up the AC remote and says: \"अच्छा? तो... AC चला लो!\" KABIR closes his eyes and sighs.",
   lines=[("बंटी", "Temperature?!"), ("मीरा", "मैडम... AQI हवा की quality होती है।"), ("मुख्यमंत्री", "अच्छा? तो... AC चला लो!")]),
  dict(id="d2", dur=12, refs=["cast"], music="hope",
-  still="The three students stride out of a grand government building gate toward the camera, determined: KABIR in front and in the centre carrying a broom over his shoulder, MEERA holding a small tree sapling in a pot, BUNTY carrying a stack of pollution masks and garbage sacks. Golden evening light cutting through the haze, low angle hero shot.",
-  action="They walk toward the camera with determination. KABIR says: \"जिन्हें AQI का मतलब नहीं पता... उनसे solution क्या मिलेगा? शुरुआत हम ख़ुद करेंगे।\" MEERA adds sharply: \"और सवाल पूछना... बिल्कुल नहीं छोड़ेंगे।\" BUNTY raises a fist.",
+  still="The three students stride out of a grand government building gate toward the camera, determined: KABIR in front and in the centre carrying a large open carton full of white pollution masks, MEERA and BUNTY beside him each carrying stacked cartons of masks. Golden evening light cutting through the haze, low angle hero shot, medium framing from the knees up.",
+  action="They walk toward the camera with determination. KABIR says: \"जिन्हें AQI का मतलब नहीं पता... उनसे solution क्या मिलेगा? शुरुआत हम ख़ुद करेंगे।\" MEERA adds sharply: \"और सवाल पूछना... बिल्कुल नहीं छोड़ेंगे।\" BUNTY nods hard.",
   lines=[("कबीर", "जिन्हें AQI का मतलब नहीं पता... उनसे solution क्या मिलेगा? शुरुआत हम ख़ुद करेंगे।"), ("मीरा", "और सवाल पूछना... बिल्कुल नहीं छोड़ेंगे।")]),
- dict(id="m1", dur=8, refs=["cast"], chyron="Pollution पर Solution — शुरुआत हम से",
-  still="Wide shot on the bank of the Yamuna in Delhi at golden hour: dozens of young student volunteers in the same white polo T-shirts cleaning the riverbank, filling sacks with plastic waste and planting saplings; in the foreground KABIR sweeping, MEERA planting a sapling, BUNTY struggling comically with a huge garbage sack. Haze, sunlight, hopeful mood.",
-  action="The volunteers work with energy, KABIR sweeps, MEERA presses soil around the sapling, BUNTY heaves the huge sack onto his shoulder and wobbles, others cheer. Nobody speaks; cheerful crowd sounds.", lines=[]),
+ dict(id="m1", dur=10, refs=["cast"], chyron="Pollution पर Solution — शुरुआत हम से",
+  still="Medium two-shot on a smoggy Delhi roadside at golden hour. On the right, facing the camera three-quarter, stands KABIR — exactly the man on the left of the first reference image, same face, same beard, same white polo T-shirt with the bold NSUI wordmark and the green-and-grey lungs poster — handing a white pollution mask with both hands to an elderly cycle-rickshaw puller seated on his rickshaw on the left. Just behind KABIR, MEERA and BUNTY (exactly as in the first reference image, same T-shirts) hold an open carton of masks; two street workers in orange vests wait in the soft-focus background. Warm, hopeful.",
+  action="KABIR hands the mask to the old rickshaw puller and says warmly: \"काका, ये लीजिए। अपना ध्यान रखिए।\" The rickshaw puller takes it, touches KABIR's shoulder and replies with feeling: \"जीते रहो बेटा।\" MEERA and BUNTY keep handing out masks behind them.",
+  lines=[("कबीर", "काका, ये लीजिए। अपना ध्यान रखिए।"), ("रिक्शावाले काका", "जीते रहो बेटा।")]),
+ dict(id="m2", dur=12, refs=["cast"],
+  still="Comic moment on the same smoggy Delhi roadside: BUNTY in the foreground stands on tiptoe trying to loop a white pollution mask over the nose of a calm, unimpressed white street cow that turns its head away; a scruffy street dog sits at his feet looking up; MEERA stands beside them with arms crossed, amused; KABIR in the background handing masks to workers. Medium shot, BUNTY's face, the cow and the dog all clearly visible.",
+  action="BUNTY struggles to put the mask on the cow, which calmly turns its head away. BUNTY turns to the camera, exasperated, and says: \"भाई... इनको मास्क कैसे पहनाऊँ?\" MEERA answers, gently and seriously: \"गाय और कुत्तों के लिए मास्क नहीं बनते, बंटी। इनके लिए तो... हवा ही साफ़ करनी पड़ेगी।\" BUNTY lowers the mask and pats the cow.",
+  lines=[("बंटी", "भाई... इनको मास्क कैसे पहनाऊँ?"), ("मीरा", "गाय और कुत्तों के लिए मास्क नहीं बनते, बंटी। इनके लिए तो... हवा ही साफ़ करनी पड़ेगी।")]),
  dict(id="e1", dur=10, refs=["cast"], sfx="laugh",
-  still="Medium close-up of KABIR in the centre looking straight into the camera with a confident smile, MEERA on his left and BUNTY on his right leaning into the frame, the riverbank clean-up and volunteers in white T-shirts blurred behind them at golden hour.",
+  still="Medium close-up of KABIR in the centre looking straight into the camera with a confident smile, MEERA on his left and BUNTY on his right leaning into the frame; behind them, softly blurred, the smoggy Delhi street at golden hour with rickshaw pullers and street workers now wearing white masks.",
   action="KABIR looks into the camera and says with a calm smile: \"और मैडम... AQI temperature नहीं होता। पर हाँ — जनता का पारा ज़रूर चढ़ रहा है।\" BUNTY grins and adds: \"नाप लेना!\" MEERA laughs.",
   lines=[("कबीर", "और मैडम... AQI temperature नहीं होता। पर हाँ — जनता का पारा ज़रूर चढ़ रहा है।"), ("बंटी", "नाप लेना!")]),
 ]
