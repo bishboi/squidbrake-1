@@ -73,7 +73,7 @@ It is clearly labelled as fiction on screen ("काल्पनिक भवि
 sourcing. Best used as the second release, a week after the first film, and as the opener at campus screenings.
 Build: `FILM=beats2126 python3 gen_assets.py <dir> vo stills videos`, then `FILM=beats2126 python3 render.py <dir> <music.mp3> delhi-2126.mp4`.
 
-## 3c. Comedy skit — "Pollution का Solution — एक खोज" (2 min 38 sec)
+## 3c. Comedy skit — "Pollution का Solution — एक खोज" (2 min 35 sec)
 
 File: `campaign/pollution-ka-solution-skit.mp4` · script: `campaign/beats_skit.py` · cast and T-shirt references: `campaign/brand/`
 
@@ -89,8 +89,9 @@ all three slap their foreheads: "फिर से नहीं…!" They walk on
 which they hand out to rickshaw pullers and street workers. Bunty then tries to put one on a street cow: "इनको मास्क कैसे
 पहनाऊँ?" — "गाय और कुत्तों के लिए मास्क नहीं बनते… इनके लिए तो हवा ही साफ़ करनी पड़ेगी।" The last line to camera: "AQI temperature नहीं होता। पर हाँ — जनता का पारा ज़रूर चढ़ रहा है।"
 
-Nameplates name real office-holders (Bhupender Yadav on the first gate, Rekha Gupta on the Chief Minister's desk). The
-first minister is never shown, and the Chief Minister is played by an invented face that is not modelled on any real
+Nameplates name real office-holders: Bhupender Yadav (Minister of Environment, Forest and Climate Change) on the first
+gate, J. P. Nadda (Minister of Health and Family Welfare) on the second, and Rekha Gupta on the Chief Minister's desk. The
+two ministers are never shown, and the Chief Minister is played by an invented face that is not modelled on any real
 person or photo. The film opens on a card saying it is fictional satire with AI-made visuals and voices, and carries a
 "काल्पनिक व्यंग्य | AI-निर्मित" label throughout. Because real people are named, have the jokes attached to them
 (leaving Delhi before Diwali on a doctor's advice, the Switzerland trip, the AC line) checked by your legal team
