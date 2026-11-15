@@ -73,7 +73,7 @@ It is clearly labelled as fiction on screen ("काल्पनिक भवि
 sourcing. Best used as the second release, a week after the first film, and as the opener at campus screenings.
 Build: `FILM=beats2126 python3 gen_assets.py <dir> vo stills videos`, then `FILM=beats2126 python3 render.py <dir> <music.mp3> delhi-2126.mp4`.
 
-## 3c. Comedy skit — "Pollution का Solution — एक खोज" (2 min 24 sec)
+## 3c. Comedy skit — "Pollution का Solution — एक खोज" (2 min 38 sec)
 
 File: `campaign/pollution-ka-solution-skit.mp4` · script: `campaign/beats_skit.py` · cast and T-shirt references: `campaign/brand/`
 
@@ -82,7 +82,9 @@ T-shirt — the lead (from supplied photos), Meera (sarcastic) and Bunty (comic 
 At the first bungalow the gatekeeper says the minister is "घर पर" — his village home, where he left before Diwali because the
 doctor said Delhi's air is harmful ("और हमारे लिए? विटामिन है?"). At the second, the deadpan guard says the minister is in a
 meeting — in Switzerland, "studying what clean air looks like". So they go straight to the Chief Minister, who tells them
-"AQI तो एक temperature है… किसी भी instrument से नाप लो" and, when corrected, "तो AC चला लो!" They walk out — "जिन्हें AQI का
+"AQI तो एक temperature है… किसी भी instrument से नाप लो" and, when corrected, "तो AC चला लो!" Outside, Bunty suggests going to the PM;
+the lead replies that he is away in winter, and that to get an answer from him you go not to his house but to Jantar Mantar —
+all three slap their foreheads: "फिर से नहीं…!" They walk on — "जिन्हें AQI का
 मतलब नहीं पता, उनसे solution क्या मिलेगा? शुरुआत हम ख़ुद करेंगे… और सवाल पूछना बिल्कुल नहीं छोड़ेंगे" — carrying cartons of masks,
 which they hand out to rickshaw pullers and street workers. Bunty then tries to put one on a street cow: "इनको मास्क कैसे
 पहनाऊँ?" — "गाय और कुत्तों के लिए मास्क नहीं बनते… इनके लिए तो हवा ही साफ़ करनी पड़ेगी।" The last line to camera: "AQI temperature नहीं होता। पर हाँ — जनता का पारा ज़रूर चढ़ रहा है।"
