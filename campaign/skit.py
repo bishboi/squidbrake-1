@@ -15,7 +15,15 @@ for s in B.SCENES:
     last = s is B.SCENES[-1]; seg = f"{TMP}/sk_{s['id']}.mp4"
     run("-i", clip, "-t", f"{end:.2f}", "-vf", f"scale={R.W}:{R.H}:flags=lanczos,fps={R.FPS},setsar=1" + (f",tpad=stop_mode=clone:stop_duration={TAIL}" if last else "") + ",format=yuv420p",
         "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "14", seg)
-    run("-i", clip, "-t", f"{end:.2f}", "-vn", "-af", "loudnorm=I=-15:TP=-1.5:LRA=11,aresample=48000,afade=t=in:d=0.05,afade=t=out:st=%.2f:d=0.15" % (end - 0.15), "-ac", "2", f"{TMP}/sk_{s['id']}.wav")
+    swaps = [(json.load(open(p)), p[:-5] + ".mp3") for p in sorted(__import__("glob").glob(f"{D}/vs_{s['id']}_*.json"))]   # lead lines re-voiced by voice_swap.py
+    tail = "loudnorm=I=-15:TP=-1.5:LRA=11,aresample=48000,afade=t=in:d=0.05,afade=t=out:st=%.2f:d=0.15" % (end - 0.15)
+    if swaps:
+        gate = "+".join(f"between(t,{w['start']:.2f},{w['end']:.2f})" for w, _ in swaps); fl = [f"[0:a]volume=enable='{gate}':volume=0[bg]"]; ins = []
+        for j, (w, mp3) in enumerate(swaps): ins += ["-i", mp3]; fl.append(f"[{j + 1}:a]aresample=44100,aformat=channel_layouts=mono,adelay={int(w['start'] * 1000)}:all=1[v{j}]")
+        fl.append("[bg]" + "".join(f"[v{j}]" for j in range(len(swaps))) + f"amix=inputs={len(swaps) + 1}:normalize=0,{tail}[o]")
+        run("-i", clip, *ins, "-t", f"{end:.2f}", "-filter_complex", ";".join(fl), "-map", "[o]", "-ac", "2", f"{TMP}/sk_{s['id']}.wav")
+    else:
+        run("-i", clip, "-t", f"{end:.2f}", "-vn", "-af", tail, "-ac", "2", f"{TMP}/sk_{s['id']}.wav")
     names = [n for n, _ in s["lines"]]
     for i, x in enumerate(tr):   # subtitle text from the script when the line count matches, else what was actually said
         text = (f"{names[i]} :  {s['lines'][i][1]}" if len(tr) == len(s["lines"]) else x["text"]).replace("...", "…")
