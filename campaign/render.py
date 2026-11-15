@@ -116,7 +116,7 @@ def render_chunk(args):
             cache[s["k"]] = Image.open(s["img"]).convert("RGB").resize((2496, 1404), Image.LANCZOS).crop((0, 0, 2496, 1404))
         return cache[s["k"]]
     ff = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
-        "-vf", "noise=alls=7:allf=t", "-c:v", "libx264", "-preset", "medium", "-crf", "19", "-pix_fmt", "yuv420p", out], stdin=subprocess.PIPE)
+        "-c:v", "libx264", "-preset", "veryfast", "-crf", "21", "-maxrate", "9M", "-bufsize", "18M", "-pix_fmt", "yuv420p", out], stdin=subprocess.PIPE)
     for fi in range(f0, f1):
         t = fi / FPS; cur = [s for s in shots if s["t0"] - XF / 2 <= t < s["t1"] + XF / 2]
         fr = shot_frame(cur[0], src(cur[0]), t)
@@ -161,16 +161,18 @@ if __name__ == "__main__":
             subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", o, "-frames:v", "1", f"{TMP}/prev_{tt}.jpg"])
         sys.exit()
     N = os.cpu_count(); edges = [nf * i // N for i in range(N + 1)]
-    with Pool(N) as p: chunks = p.map(render_chunk, [(i, edges[i], edges[i + 1], shots, caps, total, titles) for i in range(N)])
+    if os.environ.get("REUSE_VIDEO"): chunks = [f"{TMP}/chunk{i}.mp4" for i in range(N)]
+    else:
+      with Pool(N) as p: chunks = p.map(render_chunk, [(i, edges[i], edges[i + 1], shots, caps, total, titles) for i in range(N)])
     open(f"{TMP}/list.txt", "w").write("".join(f"file '{c}'\n" for c in chunks))
     # audio: narration placed on the timeline, score slowed to fit and ducked under the voice
     ins = []; fl = []
     for i, b in enumerate(beats):
         ins += ["-i", f"{TMP}/vo_{b['id']}.wav"]; fl.append(f"[{i}:a]adelay={int(b['t0'] * 1000)}:all=1[v{i}]")
     n = len(beats); mt = max(0.5, min(1.0, 177.3 / (total + 0.5)))
-    fl.append("".join(f"[v{i}]" for i in range(n)) + f"amix=inputs={n}:normalize=0,aecho=0.8:0.6:55:0.12,asplit=2[vo][sc]")
-    fl.append(f"[{n}:a]atempo={mt:.4f},aresample=48000,volume=0.62,afade=t=in:d=3,afade=t=out:st={total - 4:.2f}:d=4[m]")
-    fl.append("[m][sc]sidechaincompress=threshold=0.03:ratio=5:attack=120:release=900[md]")
+    fl.append("".join(f"[v{i}]" for i in range(n)) + f"amix=inputs={n}:normalize=0,aecho=0.8:0.6:55:0.12,volume=4.5dB,apad=whole_dur={total:.2f},asplit=2[vo][sc]")
+    fl.append(f"[{n}:a]atempo={mt:.4f},aresample=48000,volume=1.04,afade=t=in:d=3,afade=t=out:st={total - 4:.2f}:d=4[m]")
+    fl.append("[m][sc]sidechaincompress=threshold=0.05:ratio=5:attack=120:release=900[md]")
     fl.append(f"[vo][md]amix=inputs=2:normalize=0,alimiter=limit=0.95,atrim=0:{total:.2f}[a]")
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", *ins, "-i", MUSIC, "-filter_complex", ";".join(fl), "-map", "[a]", "-c:a", "aac", "-b:a", "192k", f"{TMP}/audio.m4a"], check=True)
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", f"{TMP}/list.txt", "-i", f"{TMP}/audio.m4a",
