@@ -59,7 +59,7 @@ def video(s):
         im = Image.open(f"{OUT}/still_{sid}.png").convert("RGB").resize((1920, 1080), Image.LANCZOS); buf = io.BytesIO(); im.save(buf, "JPEG", quality=92)
         return {"type": "image_url", "frame_type": kind, "image_url": {"url": "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()}}
     frames = [frame(s["first"], "first_frame")] + ([frame(s["last"], "last_frame")] if s.get("last") else [])
-    body = {"model": VMODEL, "prompt": s["motion"] + MOTION, "duration": int(min(15, max(4, math.ceil(s["need"] + 0.3)))), "resolution": "1080p",
+    body = {"model": VMODEL, "prompt": s["motion"] + MOTION, "duration": int(min(8 if s.get("last") else 15, max(4, math.ceil(s["need"] + 0.3)))), "resolution": "1080p",
             "aspect_ratio": "16:9", "generate_audio": True, "frame_images": frames}
     for attempt in range(3):
         try:

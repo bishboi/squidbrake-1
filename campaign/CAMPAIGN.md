@@ -56,6 +56,23 @@ a 15-second "आँकड़े साफ़, हवा नहीं" reel, and 
 | Sealed cars, air purifiers, children who can study abroad | A general statement about the privilege of those in power; no named person is shown or accused | Keep it general — do not attach it to a named politician or their family without a published source |
 | Those responsible were in Switzerland while the city choked | Supplied by the campaign team | **Not verified by the film-maker — confirm who, when and a source before publishing** |
 
+## 3b. Second film — "दिल्ली 2126" (2 min 8 sec)
+
+File: `campaign/delhi-2126.mp4` · script: `campaign/beats2126.py`
+
+A letter from Aarvi, a twelve-year-old living in Delhi a hundred years from now, read in a child's voice. Shots from the
+first film morph across a century into their future versions (corner labels show "2026 → 2126"): the kite rooftop turns to
+dust, India Gate is half buried, the foaming Yamuna dries into a black channel, the pigeons vanish from the wires.
+Her world has breathing classes instead of playgrounds, glass domes for the rich and air-ration queues for everyone else,
+and a single tree in a museum. Today's protest footage appears as a history-book archive, with our own placard in a
+museum case. She asks: "आपको सब पता था… फिर आपने कुछ किया क्यों नहीं?" Then the turn — "ये चिट्ठी अभी लिखी नहीं गई है" — the
+ruined skyline heals into a green city, India Gate is shown split between the two futures, and the film closes on the
+campaign end card.
+
+It is clearly labelled as fiction on screen ("काल्पनिक भविष्य | AI-निर्मित") and makes no factual claims, so it needs no
+sourcing. Best used as the second release, a week after the first film, and as the opener at campus screenings.
+Build: `FILM=beats2126 python3 gen_assets.py <dir> vo stills videos`, then `FILM=beats2126 python3 render.py <dir> <music.mp3> delhi-2126.mp4`.
+
 ## 4. On-ground ideas
 
 1. **साँस सत्याग्रह (launch day).** A completely silent march from Mandi House to Jantar Mantar. No slogans for the first
