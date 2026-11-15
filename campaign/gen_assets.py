@@ -1,66 +1,78 @@
-"""Generate voice-over (gpt-audio), images (Gemini image) and score (Lyria) through OpenRouter.
-Usage: OPENROUTER_API_KEY=... python3 gen_assets.py <outdir> [vo|img|music ...]"""
-import os, sys, json, base64, subprocess, requests
+"""Generate narration (gpt-audio), stills (Gemini image) and video shots (Gemini Omni) through OpenRouter.
+Usage: OPENROUTER_API_KEY=... python3 gen_assets.py <assets_dir> vo|stills|videos ..."""
+import os, sys, io, json, time, math, base64, subprocess, requests
 from concurrent.futures import ThreadPoolExecutor
-from beats import BEATS, STYLE, WARM
-K = os.environ["OPENROUTER_API_KEY"]; OUT = sys.argv[1]; WHAT = sys.argv[2:] or ["vo", "img", "music"]
-URL = "https://openrouter.ai/api/v1/chat/completions"; H = {"Authorization": "Bearer " + K}
-VOICE = os.environ.get("VO_VOICE", "onyx")
-SYS = ("तुम एक अनुभवी हिंदी डॉक्यूमेंट्री वॉइस-ओवर आर्टिस्ट हो। You are the narrator of an emotional Hindi documentary film about "
-       "air pollution in Delhi. Read the user's line EXACTLY as written — do not add, drop, translate or answer anything. "
-       "Voice: deep, warm, grave, intimate; slow measured pace; real pain and restraint, like a film trailer narrator. "
-       "Treat every '...' as a long dramatic pause. Natural Hindustani pronunciation. Tone for this line: {tone}")
+from PIL import Image
+from beats import BEATS, MOTION
+K = os.environ["OPENROUTER_API_KEY"]; OUT = sys.argv[1]; WHAT = sys.argv[2:]
+API = "https://openrouter.ai/api/v1"; H = {"Authorization": "Bearer " + K}
+VOICE = os.environ.get("VO_VOICE", "onyx"); VMODEL = os.environ.get("VIDEO_MODEL", "google/gemini-omni-1.2-flash")
+SYS = ("You are the narrator of an emotional Hindi documentary film about pollution in Delhi. Read the user's line EXACTLY as "
+       "written, in Hindi — do not add, drop, translate or answer anything. Voice: deep, warm, grave and intimate, like a film "
+       "trailer narrator; measured pace, not slow; real feeling and restraint. Treat '...' as a short dramatic pause. "
+       "Natural Hindustani pronunciation. Tone for this line: {tone}")
+TONE = {"a": "wistful, then heavy and factual", "b": "tender and heartbroken", "c": "tender and heartbroken", "d": "soft, aching compassion",
+        "y": "grief turning to quiet anger", "m": "bitter, ironic", "s": "cold, bitter irony", "f": "controlled anger",
+        "g": "weary, defeated", "h": "intimate, pleading, the emotional peak", "i": "rising, resolute, powerful, a call to action"}
 os.makedirs(OUT, exist_ok=True)
-
-def stream_audio(body):
-    r = requests.post(URL, headers=H, json=body, stream=True, timeout=900); aud = b""; txt = ""
-    for line in r.iter_lines():
-        if not line.startswith(b"data: "): continue
-        d = line[6:]
-        if d == b"[DONE]": break
-        j = json.loads(d)
-        if "error" in j: raise RuntimeError(j["error"])
-        for c in j.get("choices", []):
-            a = c.get("delta", {}).get("audio") or {}
-            if a.get("data"): aud += base64.b64decode(a["data"])
-            if a.get("transcript"): txt += a["transcript"]
-    return aud, txt
-
-def tone(b):
-    i = b["id"][0]
-    return {"a": "wistful, nostalgic, then heavy", "b": "tender and heartbroken", "c": "tender and heartbroken",
-            "d": "soft, aching compassion", "e": "quiet respect and sorrow", "f": "controlled anger, bitter irony",
-            "g": "weary, defeated", "h": "intimate, pleading, the emotional peak",
-            "i": "rising, resolute, powerful, a call to action"}[i]
 
 def vo(b):
     p = f"{OUT}/vo_{b['id']}.wav"
     if os.path.exists(p): return
     for attempt in range(4):
         try:
-            aud, txt = stream_audio({"model": "openai/gpt-audio", "modalities": ["text", "audio"], "stream": True,
-                "audio": {"voice": VOICE, "format": "pcm16"},
-                "messages": [{"role": "system", "content": SYS.format(tone=tone(b))}, {"role": "user", "content": b["vo"]}]})
+            r = requests.post(API + "/chat/completions", headers=H, stream=True, timeout=600, json={"model": "openai/gpt-audio",
+                "modalities": ["text", "audio"], "stream": True, "audio": {"voice": VOICE, "format": "pcm16"},
+                "messages": [{"role": "system", "content": SYS.format(tone=TONE[b["id"][0]])}, {"role": "user", "content": b["vo"]}]})
+            aud = b""; txt = ""
+            for line in r.iter_lines():
+                if not line.startswith(b"data: ") or line[6:] == b"[DONE]": continue
+                j = json.loads(line[6:])
+                if "error" in j: raise RuntimeError(j["error"])
+                for c in j.get("choices", []):
+                    a = c.get("delta", {}).get("audio") or {}
+                    if a.get("data"): aud += base64.b64decode(a["data"])
+                    txt += a.get("transcript") or ""
             if len(aud) < 24000: raise RuntimeError("short")
             subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "s16le", "-ar", "24000", "-ac", "1", "-i", "-", p], input=aud, check=True)
-            json.dump({"said": txt, "want": b["vo"]}, open(p + ".json", "w"), ensure_ascii=False)
-            print("vo", b["id"], round(len(aud) / 48000, 1), "OK" if txt.strip() == b["vo"].strip() else "DIFF: " + txt, flush=True); return
+            print("vo", b["id"], round(len(aud) / 48000, 1), "|", txt, flush=True); return
         except Exception as e: print("retry vo", b["id"], e, flush=True)
 
-def img(args):
-    b, n, prompt = args; p = f"{OUT}/img_{b['id']}_{n}.png"
-    if os.path.exists(p): return
+def still(s):
+    sid, prompt, _ = s; p = f"{OUT}/still_{sid}.png"
+    if os.path.exists(p) or not prompt: return
     for attempt in range(4):
         try:
-            j = requests.post(URL, headers=H, timeout=400, json={"model": "google/gemini-3.1-flash-image", "modalities": ["image", "text"],
-                "image_config": {"aspect_ratio": "16:9", "image_size": "2K"},
-                "messages": [{"role": "user", "content": prompt + (WARM if b.get("warm") else STYLE)}]}).json()
+            j = requests.post(API + "/chat/completions", headers=H, timeout=400, json={"model": "google/gemini-3.1-flash-image",
+                "modalities": ["image", "text"], "image_config": {"aspect_ratio": "16:9", "image_size": "2K"},
+                "messages": [{"role": "user", "content": prompt}]}).json()
             u = j["choices"][0]["message"]["images"][0]["image_url"]["url"]
-            open(p, "wb").write(base64.b64decode(u.split(",", 1)[1])); print("img", p, flush=True); return
-        except Exception as e: print("retry img", b["id"], n, str(e)[:200], flush=True)
+            open(p, "wb").write(base64.b64decode(u.split(",", 1)[1])); print("still", sid, flush=True); return
+        except Exception as e: print("retry still", sid, str(e)[:200], flush=True)
 
-jobs = []
-with ThreadPoolExecutor(10) as ex:
-    if "vo" in WHAT: jobs += [ex.submit(vo, b) for b in BEATS]
-    if "img" in WHAT: jobs += [ex.submit(img, (b, n, p)) for b in BEATS for n, p in enumerate(b["imgs"])]
-    for j in jobs: j.result()
+def video(s):
+    p = f"{OUT}/clip_{s['id']}.mp4"
+    if os.path.exists(p): return
+    im = Image.open(f"{OUT}/still_{s['id']}.png").convert("RGB").resize((1920, 1080), Image.LANCZOS); buf = io.BytesIO(); im.save(buf, "JPEG", quality=92)
+    body = {"model": VMODEL, "prompt": s["motion"] + MOTION, "duration": int(min(15, max(4, math.ceil(s["need"] + 0.3)))), "resolution": "1080p",
+            "aspect_ratio": "16:9", "generate_audio": True, "frame_images": [{"type": "image_url", "frame_type": "first_frame",
+            "image_url": {"url": "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()}}]}
+    for attempt in range(3):
+        try:
+            j = requests.post(API + "/videos", headers=H, json=body, timeout=180).json()
+            if "id" not in j: raise RuntimeError(str(j)[:300])
+            for _ in range(120):
+                time.sleep(8); st = requests.get(f"{API}/videos/{j['id']}", headers=H, timeout=60).json()
+                if st.get("status") in ("completed", "failed", "cancelled", "expired"): break
+            if st.get("status") != "completed": raise RuntimeError(str(st)[:300])
+            r = requests.get(f"{API}/videos/{j['id']}/content?index=0", headers=H, timeout=300); r.raise_for_status()
+            open(p, "wb").write(r.content); print("clip", s["id"], body["duration"], "s", flush=True); return
+        except Exception as e: print("retry clip", s["id"], str(e)[:300], flush=True)
+
+with ThreadPoolExecutor(8) as ex:
+    if "vo" in WHAT: list(ex.map(vo, BEATS))
+    if "stills" in WHAT: list(ex.map(still, [s for b in BEATS for s in b["shots"]]))
+    if "videos" in WHAT:
+        from timeline import build
+        shots, caps, total = build(OUT); print(f"film {total:.1f}s, footage {sum(s['need'] for s in shots):.0f}s", flush=True)
+        list(ex.map(video, shots))

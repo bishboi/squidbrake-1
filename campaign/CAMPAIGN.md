@@ -1,6 +1,6 @@
-# हक़ है साँस — NSUI Delhi clean-air campaign
+# Let Delhi Breathe — NSUI Delhi clean-air campaign
 
-**Slogan:** हक़ है साँस, लेकर रहेंगे · **Tags:** #HaqHaiSaans #SaansSatyagraha · **Question we keep asking:** ज़िम्मेदार कौन?
+**Slogans:** Let Delhi Breathe · Pollution पर Solution · दिल्ली को साँस लेने दो · **Tags:** #LetDelhiBreathe #PollutionParSolution · **Question we keep asking:** ज़िम्मेदार कौन?
 
 ## 1. The idea in one line
 
@@ -20,24 +20,38 @@ The villain is the *pointing finger*, not a named person. This keeps the campaig
 | Outdoor workers (rickshaw, vendors, traffic police, delivery riders) | No choice | Receive masks and health check-ups, speak at events |
 | Media and the undecided public | Fatigue ("every year the same story") | Cover the charter and the deadline, not just the smog |
 
-## 3. The film — "हक़ है साँस" (3 min 9 sec)
+## 3. The film — "Let Delhi Breathe" (3 min)
 
-File: `campaign/haq-hai-saans.mp4` · full narration: section 8 · shot list: `campaign/beats.py`
+File: `campaign/let-delhi-breathe.mp4` · full narration: section 8 · shot list: `campaign/beats.py`
+Every shot is generated video (not slides), with Hindi narration, captions, an original score and ambient sound.
 
-| Time | Chapter | What we see | Feeling |
-|---|---|---|---|
-| 0:00 | याद है? | Kites over Old Delhi, blue sky | Nostalgia |
-| 0:12 | आज | City under smog, India Gate vanishing, "AQI 400 के पार" | Shock |
-| 0:27 | आरव, 7 साल | Schoolboy with inhaler, nebuliser in a hospital ward | Heartbreak |
-| 0:43 | शांति देवी | Grandmother, oxygen cylinder by the bed | Tenderness |
-| 1:00 | बेज़ुबान | Street dog, cow at burning garbage, birds on wires | Compassion |
-| 1:14 | ज़िम्मेदार कौन? | Faceless leaders pointing at each other, file moving desk to desk, empty chairs | Anger |
-| 1:48 | आवाज़ें जो दब गईं | Mothers and students protesting, abandoned placards | Defeat |
-| 2:12 | बच्चों की विरासत | Father and daughter walking into smog, girl behind a window, grey-sky crayon drawing, a child's eyes | The emotional peak |
-| 2:43 | हक़ है साँस | Students marching into sunrise, child breathing under a blue sky | Resolve |
+| Chapter | What we see | Feeling |
+|---|---|---|
+| याद है वो दिल्ली? | Kites over Old Delhi, a boat on a clean Yamuna | Nostalgia |
+| आज | City under smog; **AQI 1000+**; **13 of the world's 20 most polluted cities are in India** | Shock |
+| आरव, 7 साल | Schoolboy with an inhaler, then on a nebuliser | Heartbreak |
+| शांति देवी | Grandmother on oxygen | Tenderness |
+| बेज़ुबान | Street dog, cow at burning garbage, birds on wires | Compassion |
+| **यमुना** | River under toxic foam, women offering Chhath prayers standing in it | Grief |
+| **इलाज के नाम पर** | Chemical sprayed to hide the foam; water sprayed around AQI monitors — "हवा साफ़ नहीं होती, बस आँकड़े साफ़ हो जाते हैं" | Anger |
+| **स्विट्ज़रलैंड** | A jet climbing out of the smog; a faceless official breathing Alpine air | Bitter irony |
+| ज़िम्मेदार कौन? | Microphones, pointing fingers | Anger |
+| आवाज़ें जो दब गईं | Mothers and students protesting, abandoned placards | Defeat |
+| बच्चों की विरासत | Father and daughter fading into smog, girl behind a window, a child's eyes | The emotional peak |
+| Pollution पर Solution | Students marching into sunrise, end card "Let Delhi Breathe" | Resolve |
 
-Cut-downs to make from the same material: a 30-second reel (child's question + slogan), a 15-second "ज़िम्मेदार कौन?" reel
-(only the pointing fingers), and nine vertical single-chapter stories.
+Cut-downs to make from the same shots: a 30-second reel (child's question + end card), a 20-second Yamuna reel,
+a 15-second "आँकड़े साफ़, हवा नहीं" reel, and vertical single-chapter stories.
+
+### Claims in the film and what backs them — check before release
+
+| Line in the film | Basis | Status |
+|---|---|---|
+| AQI above 1000 in parts of Delhi | Private real-time monitors (IQAir) showed 1000+ readings in November 2024 | Solid, but say "private monitors": the official CPCB index stops at 500, which the film states |
+| 13 of the 20 most polluted cities are in India; Delhi the most polluted capital | IQAir World Air Quality Report 2024 (shown on screen) | Solid; update if a newer edition changes the count |
+| Chemical sprayed on the Yamuna to suppress foam | Delhi Jal Board has sprayed anti-foaming agents before Chhath, widely reported | Solid |
+| Water sprayed around AQI monitoring stations | News videos and opposition allegations; the government has called it routine dust control | **Contested** — keep the clips and dates ready |
+| Those responsible were in Switzerland while the city choked | Supplied by the campaign team | **Not verified by the film-maker — confirm who, when and a source before publishing** |
 
 ## 4. On-ground ideas
 
@@ -59,7 +73,9 @@ Cut-downs to make from the same material: a 30-second reel (child's question + s
 8. **Mask and health camps for outdoor workers.** N95 masks and free lung-function tests for rickshaw pullers, vendors,
    sanitation workers and traffic police, with volunteer doctors.
 9. **Campus AQI boards.** A low-cost sensor and live display at every college gate, run by the NSUI unit; daily reading posted online.
-10. **21-day countdown.** A public clock at the campaign site counting the days since the charter was submitted without a written reply.
+10. **यमुना आरती, मास्क पहनकर.** An evening aarti on the Yamuna bank with every participant masked and jars of the river's water on display — one image that joins the air and the river.
+11. **"आँकड़े नहीं, हवा साफ़ करो" watch.** Student teams photograph and geotag any sprinkling staged around AQI monitoring stations and publish it daily.
+12. **21-day countdown.** A public clock at the campaign site counting the days since the charter was submitted without a written reply.
 
 ## 5. Digital ideas
 
@@ -79,8 +95,9 @@ Cut-downs to make from the same material: a 30-second reel (child's question + s
 4. **Support farmers instead of blaming them** — machines and payment for stubble management before the harvest, not fines after it.
 5. **Zero open waste burning and enforced dust control** at every construction site, with a public complaint dashboard.
 6. **Protect the most exposed** — air purifiers in government schools and hospitals, free masks and annual lung check-ups for outdoor workers.
-7. **Open data** — real-time, ward-level AQI and source data, and health data on pollution-linked illness.
-8. **Care for the voiceless** — shelter, water and veterinary support for street animals on severe-AQI days.
+7. **Honest data** — real-time, ward-level AQI and source data, no sprinkling or cleaning drives staged around monitoring stations, and an independent audit of the monitors.
+8. **A living Yamuna** — a dated plan to stop untreated sewage and industrial discharge entering the river, with monthly public water-quality reports; treat the cause, not the foam.
+9. **Care for the voiceless** — shelter, water and veterinary support for street animals on severe-AQI days.
 
 ## 7. Six-week rollout
 
@@ -98,42 +115,39 @@ film completion rate, and — the only one that finally matters — a written, d
 
 ## 8. Narration (Hindi voice-over, as recorded)
 
-> याद है... वो सुबह? जब आसमान नीला हुआ करता था... और दिल्ली की हवा में... सर्दियों की गुनगुनी धूप घुली रहती थी।
-> आज... वही दिल्ली... धुएँ की चादर में घुट रही है। यहाँ सुबह नहीं होती... बस अँधेरे का रंग बदल जाता है।
+> याद है वो दिल्ली? जब आसमान नीला था... और यमुना के पानी में चाँद दिखता था।
+> आज... उसी शहर में साँस लेना... एक सज़ा है।
+> दिल्ली के कई इलाक़ों में AQI... एक हज़ार के पार जा चुका है। जबकि सरकारी पैमाना... पाँच सौ पर ही ख़त्म हो जाता है।
+> दुनिया के बीस सबसे प्रदूषित शहरों में... तेरह भारत के हैं। और दिल्ली... दुनिया की सबसे प्रदूषित राजधानी।
 >
 > ये आरव है। सात साल का। इसके बस्ते में किताबों के साथ... एक इनहेलर भी रहता है।
 > इसने खेल के मैदान से पहले... अस्पताल का रास्ता पहचान लिया है।
+> शांति देवी ने इस शहर को बनते देखा है। आज चार कदम चलती हैं... तो साँस उखड़ जाती है।
+> और वो बेज़ुबान... सड़क का कुत्ता... गाय... परिंदे... जिनके लिए न कोई मास्क है... न कोई आवाज़।
 >
-> ये शांति देवी हैं। इन्होंने इस शहर को अपनी आँखों के सामने बनते देखा है।
-> आज चार कदम चलती हैं... तो साँस उखड़ जाती है। बुढ़ापे को सहारा चाहिए था... मिला ऑक्सीजन का सिलेंडर।
+> और यमुना? जिसे हम माँ कहते हैं... वो ज़हरीले झाग में दम तोड़ रही है।
+> उसी झाग में खड़े होकर... हमारी माँएँ सूरज को अर्घ्य देती हैं।
+> और इलाज? झाग छिपाने के लिए... नदी में और केमिकल छिड़क दिया जाता है। गंदगी वहीं रहती है... बस कैमरे को दिखनी बंद हो जाती है।
+> हवा का भी यही इलाज है। AQI नापने वाली मशीनों के आसपास... पानी का छिड़काव। हवा साफ़ नहीं होती... बस आँकड़े साफ़ हो जाते हैं।
 >
-> और वो... जो बोल भी नहीं सकते। सड़क का वो कुत्ता... जो रात भर खाँसता है। वो गाय... वो परिंदे... जो इसी ज़हर में साँस ले रहे हैं।
+> और जिन पर ज़िम्मेदारी थी? जब शहर घुट रहा था... वो स्विट्ज़रलैंड की साफ़ हवा में थे।
+> पूछो... ज़िम्मेदार कौन? तो जवाब में मिलती है... बस एक उँगली। हर कुर्सी... दूसरी कुर्सी की तरफ़ इशारा करती है।
+> लोग सड़कों पर उतरे। माँओं ने तख़्तियाँ उठाईं। छात्रों ने आवाज़ उठाई। पर हर साल... वही वादे... वही धुआँ।
 >
-> और जब जनता पूछती है — ज़िम्मेदार कौन? तो जवाब में मिलती है... बस एक उँगली।
-> पहला कहता है... ये उनकी ज़िम्मेदारी है। दूसरा कहता है... धुआँ पड़ोस से आया है। तीसरा कहता है... फ़ंड नहीं मिला।
-> हर कुर्सी... दूसरी कुर्सी की तरफ़ इशारा करती है। फ़ाइल एक मेज़ से दूसरी मेज़ घूमती रहती है... और शहर... घुटता रहता है।
+> ज़रा सोचिए... हम अपने बच्चों के लिए क्या छोड़कर जा रहे हैं? एक ज़हरीली हवा... एक मरी हुई नदी... और खिड़की के पीछे क़ैद बचपन।
+> एक दिन आपका बच्चा पूछेगा... जब हवा ज़हर बन रही थी... तब आप क्या कर रहे थे?
 >
-> लोग सड़कों पर उतरे। माँओं ने बच्चों को गोद में लेकर तख़्तियाँ उठाईं। छात्रों ने आवाज़ उठाई। डॉक्टरों ने चेतावनी दी।
-> पर हर साल... वही बैठकें... वही वादे... वही धुआँ। सर्दी जाती है... ख़बर ठंडी पड़ जाती है... और हम... भूल जाते हैं।
->
-> पर ज़रा सोचिए... हम अपने बच्चों के लिए क्या छोड़कर जा रहे हैं?
-> हमारे बुज़ुर्गों ने हमें नदियाँ दीं... पेड़ दिए... खुला आसमान दिया।
-> और हम उन्हें दे रहे हैं... मास्क... नेबुलाइज़र... और एक ऐसा शहर... जहाँ बचपन खिड़की के पीछे क़ैद है।
-> एक दिन आपका बच्चा पूछेगा — जब हवा ज़हर बन रही थी... तब आप क्या कर रहे थे?
->
-> अब चुप रहना... गुनाह है। साँस लेना कोई एहसान नहीं... हमारा हक़ है।
-> ये लड़ाई किसी एक की नहीं... हर साँस की है। सवाल पूछिए। जवाब माँगिए। NSUI के साथ आइए।
-> **हक़ है साँस... लेकर रहेंगे।**
-
-Four extra lines were recorded and are kept in `beats.py` (marked `skip=True`) for a longer cut: children breathing poison,
-"न कोई मास्क, न कोई अस्पताल, न कोई आवाज़", and the rickshaw puller / vendor / traffic policeman with only a gamcha.
+> अब बहाने नहीं... समाधान चाहिए। Pollution पर... Solution.
+> साँस लेना कोई एहसान नहीं... हमारा हक़ है। सवाल पूछिए। जवाब माँगिए। NSUI के साथ आइए।
+> **दिल्ली को... साँस लेने दो।**
 
 ## 9. Production notes
 
-- Every image is AI-generated and the film carries an on-screen "सांकेतिक दृश्य | AI-निर्मित चित्र" label. Aarav and Shanti Devi
-  are representative characters, not real people. No real politician, party symbol or logo appears.
-- Voice: `openai/gpt-audio` · images: `google/gemini-3.1-flash-image` · score: `google/lyria-3-pro-preview`, all through OpenRouter.
-- Rebuild: `OPENROUTER_API_KEY=… python3 gen_assets.py <assets_dir>` then `python3 render.py <assets_dir> <music.mp3> haq-hai-saans.mp4`.
-  Change the narrator with `VO_VOICE=<voice>`.
-- Before public release: have a Hindi speaker listen once end to end, replace the generated score if you need a licensed
-  track for broadcast, and add the official NSUI logo on the end card.
+- Every shot is AI-generated and the film carries an on-screen "सांकेतिक दृश्य | AI-निर्मित" label. Aarav and Shanti Devi are
+  representative characters, not real people. No real politician, party symbol or logo appears; officials are shown faceless.
+- Narration: `openai/gpt-audio` · stills: `google/gemini-3.1-flash-image` · video shots: `google/gemini-omni-1.2-flash` (image-to-video, 1080p)
+  · score: `google/lyria-3-pro-preview`, all through OpenRouter.
+- Rebuild: `OPENROUTER_API_KEY=… python3 gen_assets.py <assets_dir> vo stills videos`, then
+  `python3 render.py <assets_dir> <music.mp3> let-delhi-breathe.mp4`. Change the narrator with `VO_VOICE=<voice>`.
+- Before public release: have a Hindi speaker listen once end to end, confirm the two flagged claims in section 3,
+  replace the generated score if you need a licensed track for broadcast, and add the official NSUI logo on the end card.

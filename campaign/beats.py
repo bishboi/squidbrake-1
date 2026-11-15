@@ -1,101 +1,87 @@
 # -*- coding: utf-8 -*-
-"""Script for the film "हक़ है साँस" — one entry per beat.
-vo   : Hindi voice-over line (read verbatim by the narrator)
-imgs : image prompts for the beat (screen time is split equally)
-title: optional big on-screen card
-warm : True for memory / hope shots (no smog grade)
+"""Script for the film "Let Delhi Breathe" (v2, generated video shots).
+Each beat: vo = Hindi narration (read verbatim), cap = caption text if it differs from vo,
+title = (big, small, source) on-screen card, shots = list of (still_id, still_prompt, motion_prompt).
 """
 STYLE = (" Photorealistic cinematic documentary film still, 35mm lens, shallow depth of field, "
          "muted desaturated grey-teal palette with sickly orange smog haze, soft film grain, somber, emotional. "
          "Ordinary Indian people, Delhi. No readable text, no captions, no watermark, no logos, no flags.")
-WARM = (" Photorealistic cinematic film still, 35mm lens, warm golden sunlight, clear blue sky, rich natural colours, "
-        "nostalgic and tender. Ordinary Indian people. No readable text, no captions, no watermark, no logos.")
+WARM = (" Photorealistic cinematic film still, 35mm lens, warm golden sunlight, clear blue sky, rich natural colours. "
+        "No readable text, no captions, no watermark, no logos.")
+MOTION = " Photorealistic, natural slow cinematic motion, documentary realism, no text or captions appearing. Ambient natural sound only, no speech, no music."
 
 BEATS = [
- dict(id="a1", warm=True,
-  vo="याद है... वो सुबह? जब आसमान नीला हुआ करता था... और दिल्ली की हवा में... सर्दियों की गुनगुनी धूप घुली रहती थी।",
-  imgs=["Children flying colourful kites on an Old Delhi rooftop in winter morning sunlight, clear deep blue sky, domes and old houses in the distance, joyful."]),
- dict(id="a2",
-  vo="आज... वही दिल्ली... धुएँ की चादर में घुट रही है।",
-  imgs=["Aerial wide shot of the dense Delhi cityscape at sunrise almost completely swallowed by thick brown-grey smog, a weak dull orange sun, buildings fading into haze."]),
- dict(id="a3", title=("AQI 400 के पार", "श्रेणी : गंभीर"),
-  vo="यहाँ सुबह नहीं होती... बस अँधेरे का रंग बदल जाता है।",
-  imgs=["India Gate in New Delhi at dawn barely visible through thick grey-brown winter smog, a lone elderly man in a shawl walking with a cane in the foreground."]),
- dict(id="b1",
-  vo="ये आरव है। सात साल का। इसके बस्ते में किताबों के साथ... एक इनहेलर भी रहता है।",
-  imgs=["A seven year old Indian schoolboy in school uniform and a pollution mask standing on a smoggy Delhi street in the morning, school bag on his shoulders, holding a blue asthma inhaler in his small hand, looking at the camera with tired eyes."]),
- dict(id="b2",
-  vo="इसने खेल के मैदान से पहले... अस्पताल का रास्ता पहचान लिया है।",
-  imgs=["A small Indian boy lying on a government hospital bed breathing through a nebulizer mask, his mother's hand holding his hand, dim cold light, crowded ward softly blurred behind."]),
- dict(id="b3", skip=True,
-  vo="इसकी उम्र के लाखों बच्चे... हर साँस के साथ... थोड़ा-थोड़ा ज़हर पी रहे हैं।",
-  imgs=["An empty children's playground in Delhi in dense smog, still rusty swings and a slide, no children, bare trees fading into grey haze, deeply melancholic."]),
- dict(id="c1",
-  vo="ये शांति देवी हैं। इन्होंने इस शहर को अपनी आँखों के सामने बनते देखा है।",
-  imgs=["Close portrait of an eighty year old Indian grandmother with deep wrinkles and a faded cotton saree, shawl over her head, sitting on a charpai in a narrow hazy Delhi lane, eyes full of memory and sorrow."]),
- dict(id="c2",
-  vo="आज चार कदम चलती हैं... तो साँस उखड़ जाती है। बुढ़ापे को सहारा चाहिए था... मिला ऑक्सीजन का सिलेंडर।",
-  imgs=["An elderly Indian woman sitting on a bed in a small dim room with a nasal oxygen cannula, a tall oxygen cylinder beside her, the window behind showing nothing but grey smog.",
-        "Close-up of an old wrinkled Indian hand resting on the valve of a worn oxygen cylinder, soft window light, dust in the air."]),
- dict(id="d1",
-  vo="और वो... जो बोल भी नहीं सकते।",
-  imgs=["Close-up of a thin Indian street dog lying on a dusty roadside in thick morning smog, sad watery eyes looking into the camera, blurred traffic headlights behind."]),
- dict(id="d2",
-  vo="सड़क का वो कुत्ता... जो रात भर खाँसता है। वो गाय... वो परिंदे... जो इसी ज़हर में साँस ले रहे हैं।",
-  imgs=["A stray cow standing beside a smouldering roadside garbage heap in Delhi, smoke and smog all around, silhouettes of vehicles in the haze.",
-        "A row of pigeons sitting still on tangled electric wires against a blank grey-brown smog sky in Delhi, one bird drooping, no sun visible."]),
- dict(id="d3", skip=True,
-  vo="इनके लिए न कोई मास्क है... न कोई अस्पताल... न कोई आवाज़।",
-  imgs=["A little Indian girl in a mask kneeling on a smoggy footpath offering a bowl of water to a weak street puppy, tender moment, haze all around."]),
- dict(id="e1", skip=True,
-  vo="रिक्शा खींचने वाला... रेहड़ी लगाने वाला... चौराहे पर खड़ा सिपाही।",
-  imgs=["A thin cycle rickshaw puller straining to pedal through dense smog on a Delhi road at dawn, headlights glowing in the haze behind him.",
-        "An Indian traffic policeman in a simple mask standing in the middle of a smog-choked Delhi intersection, arm raised, vehicles fading into grey haze."]),
- dict(id="e2", skip=True,
-  vo="जिनके पास एयर प्यूरीफ़ायर नहीं... बस एक गमछा है।",
-  imgs=["Extreme close-up of an Indian daily-wage labourer's face, nose and mouth covered with a checked cotton gamcha cloth, dusty skin, red tired eyes looking straight at camera, smog behind."]),
- dict(id="f1", title=("ज़िम्मेदार कौन?", None),
-  vo="और जब जनता पूछती है — ज़िम्मेदार कौन? तो जवाब में मिलती है... बस एक उँगली।",
-  imgs=["Many news microphones and cameras pushed toward an anonymous politician in a white kurta and sleeveless jacket, framed from the neck down so his face is never visible, his hand raised pointing a finger away to the side."]),
- dict(id="f2",
-  vo="पहला कहता है... ये उनकी ज़िम्मेदारी है। दूसरा कहता है... धुआँ पड़ोस से आया है। तीसरा कहता है... फ़ंड नहीं मिला।",
-  imgs=["Top-down overhead shot of four anonymous bareheaded men with short black hair in plain white kurtas standing in a circle on a marble floor, seen directly from above so no faces are visible, each one pointing his finger at the next man, a visual metaphor of a blame game, hazy light.",
-        "Close-up of several male hands in white kurta sleeves all pointing index fingers in different directions at each other, dark background, dramatic side light, no faces."]),
- dict(id="f3",
-  vo="हर कुर्सी... दूसरी कुर्सी की तरफ़ इशारा करती है। फ़ाइल एक मेज़ से दूसरी मेज़ घूमती रहती है... और शहर... घुटता रहता है।",
-  imgs=["A thick dusty government file tied with red tape being pushed across a wooden office desk from one anonymous hand to another, piles of old files around, dim tube light, no faces.",
-        "A row of empty ornate high-backed official chairs behind a long table in a grand government hall, tall windows behind showing a city drowned in smog."]),
- dict(id="g1",
-  vo="लोग सड़कों पर उतरे। माँओं ने बच्चों को गोद में लेकर तख़्तियाँ उठाईं। छात्रों ने आवाज़ उठाई। डॉक्टरों ने चेतावनी दी।",
-  imgs=["Indian mothers wearing masks standing in a street protest in smoggy Delhi, holding their small masked children in their arms, blank hand-made cardboard placards with a simple drawing of lungs, worried determined faces.",
-        "Young Indian college students in masks protesting at dusk in the smog, raised fists, some holding candles, blank cardboard placards, mouths open shouting slogans."]),
- dict(id="g2",
-  vo="पर हर साल... वही बैठकें... वही वादे... वही धुआँ।",
-  imgs=["After a protest: abandoned blank cardboard placards and a used pollution mask lying on a wet empty Delhi road at night, streetlights glowing in thick smog, nobody around."]),
- dict(id="g3",
-  vo="सर्दी जाती है... ख़बर ठंडी पड़ जाती है... और हम... भूल जाते हैं।",
-  imgs=["A tired young Indian woman protester sitting alone on a footpath at night with her head down, mask pulled under her chin, a blank placard resting against her knees, smog and blurred passing traffic."]),
- dict(id="h1",
-  vo="पर ज़रा सोचिए... हम अपने बच्चों के लिए क्या छोड़कर जा रहे हैं?",
-  imgs=["Shot from behind: an Indian father holding the hand of his small daughter, both walking away down a road that disappears into dense grey smog, tiny figures, vast emptiness."]),
- dict(id="h2", warm=True,
-  vo="हमारे बुज़ुर्गों ने हमें नदियाँ दीं... पेड़ दिए... खुला आसमान दिया।",
-  imgs=["An Indian grandfather and his small grandchild sitting under a huge old banyan tree beside a clean sparkling river, golden sunlight through leaves, birds in a clear blue sky."]),
- dict(id="h3",
-  vo="और हम उन्हें दे रहे हैं... मास्क... नेबुलाइज़र... और एक ऐसा शहर... जहाँ बचपन खिड़की के पीछे क़ैद है।",
-  imgs=["A five year old Indian girl inside a flat pressing her small palm and forehead against a closed window pane, looking out at a playground lost in grey smog, her reflection in the glass.",
-        "A child's crayon drawing on a table showing a family and a house under a sky scribbled completely grey-black with a small dull sun, a pollution mask lying next to the crayons."]),
- dict(id="h4",
-  vo="एक दिन आपका बच्चा पूछेगा — जब हवा ज़हर बन रही थी... तब आप क्या कर रहे थे?",
-  imgs=["Extreme close-up of a small Indian child's large dark eyes looking directly into the camera above a white pollution mask, a tear forming, soft grey background."]),
- dict(id="i1",
-  vo="अब चुप रहना... गुनाह है। साँस लेना कोई एहसान नहीं... हमारा हक़ है।",
-  imgs=["Low-angle shot of young Indian university students, men and women, marching forward together with determined faces, masks pulled down, first rays of golden sunlight breaking through the smog behind them."]),
- dict(id="i2", warm=True,
-  vo="ये लड़ाई किसी एक की नहीं... हर साँस की है। सवाल पूछिए। जवाब माँगिए। एन एस यू आई के साथ आइए।",
-  cap="ये लड़ाई किसी एक की नहीं... हर साँस की है। सवाल पूछिए। जवाब माँगिए। NSUI के साथ आइए।",
-  imgs=["A huge peaceful crowd of young Indian students filling a wide Delhi avenue at sunrise, thousands of raised hands, golden light cutting through clearing haze, hopeful and powerful, seen from slightly above."]),
- dict(id="i3", warm=True, end=True,
-  vo="हक़ है साँस... लेकर रहेंगे।",
-  imgs=["A small Indian child standing on a rooftop with arms spread wide, face lifted to a clear bright blue sky with a single kite flying, taking a deep breath, sunlight, freedom, seen from behind."]),
+ dict(id="a1", vo="याद है वो दिल्ली? जब आसमान नीला था... और यमुना के पानी में चाँद दिखता था।", shots=[
+  ("kites", "Children flying colourful kites on an Old Delhi rooftop in winter morning sunlight, clear deep blue sky, domes and old houses in the distance, joyful." + WARM,
+   "The children laugh and tug their kite strings, kites dance in the blue sky, the camera slowly cranes upward."),
+  ("yam_clean", "The Yamuna river decades ago at dawn, clean blue rippling water, a boatman rowing a small wooden boat, white birds flying low, old ghats and trees on the bank, the moon still faintly visible in the sky." + WARM,
+   "The boatman rows gently, ripples spread on the clean water, birds glide past, slow drift forward.")]),
+ dict(id="a2", vo="आज... उसी शहर में साँस लेना... एक सज़ा है।", shots=[
+  ("smog_aerial", None, "Slow aerial drone flight forward over the city as thick smog drifts between the buildings, the dull sun barely glowing.")]),
+ dict(id="a3", title=("AQI 1000+", "सरकारी पैमाना 500 पर ख़त्म", None),
+  vo="दिल्ली के कई इलाक़ों में ए क्यू आई... एक हज़ार के पार जा चुका है। जबकि सरकारी पैमाना... पाँच सौ पर ही ख़त्म हो जाता है।",
+  cap="दिल्ली के कई इलाक़ों में AQI... एक हज़ार के पार जा चुका है। जबकि सरकारी पैमाना... पाँच सौ पर ही ख़त्म हो जाता है।", shots=[
+  ("indiagate", None, "The old man in a shawl walks slowly away toward India Gate with his cane through thick drifting winter smog, distant headlights pass, slow dolly forward.")]),
+ dict(id="a4", title=("20 में से 13", "दुनिया के सबसे प्रदूषित शहर भारत में", "स्रोत : IQAir World Air Quality Report 2024"),
+  vo="दुनिया के बीस सबसे प्रदूषित शहरों में... तेरह भारत के हैं। और दिल्ली... दुनिया की सबसे प्रदूषित राजधानी।", shots=[
+  ("highway", "Wide telephoto shot of a north Indian city at dusk drowned in smog: an endless traffic jam on a flyover, red tail lights, factory and power plant chimneys releasing smoke on the horizon, a blood-orange sun." + STYLE,
+   "Traffic crawls forward, smoke rises from the chimneys, smog rolls across the frame, slow push in.")]),
+ dict(id="b1", vo="ये आरव है। सात साल का। इसके बस्ते में किताबों के साथ... एक इनहेलर भी रहता है।", shots=[
+  ("boy", None, "The schoolboy looks at the camera, slowly lifts the inhaler toward his masked face, traffic and people pass behind him in the haze, gentle handheld camera.")]),
+ dict(id="b2", vo="इसने खेल के मैदान से पहले... अस्पताल का रास्ता पहचान लिया है।", shots=[
+  ("hospital", None, "Mist flows from the nebulizer mask, the sleeping boy's chest rises and falls, his mother's thumb gently strokes his hand, very slow push in.")]),
+ dict(id="c1", vo="शांति देवी ने इस शहर को बनते देखा है। आज चार कदम चलती हैं... तो साँस उखड़ जाती है।", shots=[
+  ("dadi", None, "The grandmother looks into the camera, breathes heavily, pulls her shawl closer and lowers her eyes, people pass blurred behind her."),
+  ("oxygen", None, "The elderly woman breathes slowly through the oxygen tube and turns her head toward the grey window, dust floating in the light, slow push in.")]),
+ dict(id="d1", vo="और वो बेज़ुबान... सड़क का कुत्ता... गाय... परिंदे... जिनके लिए न कोई मास्क है... न कोई आवाज़।", shots=[
+  ("dog", None, "The street dog lifts its head weakly, blinks its watery eyes and lowers its chin back on its paws while blurred headlights pass behind."),
+  ("cow", None, "Smoke curls up from the burning garbage, the cow chews slowly and turns its head, vehicles move through the haze behind."),
+  ("pigeons", None, "The pigeons sit hunched on the wires in the smog, one shakes its feathers and flies away, slow tilt up to the blank grey sky.")]),
+ dict(id="y1", vo="और यमुना? जिसे हम माँ कहते हैं... वो ज़हरीले झाग में दम तोड़ रही है।", shots=[
+  ("yam_foam", "Aerial drone shot of the Yamuna river in Delhi near a barrage, the dark polluted water completely covered with thick white toxic foam like floating snow, grey smog, a bridge and hazy city skyline behind." + STYLE,
+   "Slow drone flight low over the river as the thick white toxic foam drifts and swirls on the dark water.")]),
+ dict(id="y2", vo="उसी झाग में खड़े होकर... हमारी माँएँ सूरज को अर्घ्य देती हैं।", shots=[
+  ("yam_chhath", "Indian women devotees in bright sarees standing waist-deep in a river covered in thick white toxic foam at hazy sunrise, seen from behind, holding woven baskets of fruit and raising folded hands toward a dull orange sun, Chhath Puja on the polluted Yamuna." + STYLE,
+   "The women raise their offerings toward the dull rising sun while the white foam drifts around their waists, slow push in.")]),
+ dict(id="y3", vo="और इलाज? झाग छिपाने के लिए... नदी में और केमिकल छिड़क दिया जाता है। गंदगी वहीं रहती है... बस कैमरे को दिखनी बंद हो जाती है।", shots=[
+  ("yam_spray", "Two workers standing on a small motor boat on a foam-covered polluted river in Delhi, spraying liquid chemical from hoses onto the thick white foam, plastic drums on the boat, smog, bridge behind." + STYLE,
+   "The workers sweep their hoses side to side spraying chemical onto the foam, the foam slowly dissolves near the boat, the boat drifts forward."),
+  ("yam_dark", "Close low-angle shot of black polluted river water with oily film, plastic waste and remnants of dissolving white foam at the muddy bank of the Yamuna, a drain pipe pouring dark sewage into the river." + STYLE,
+   "Dark sewage pours from the pipe into the river, the oily water ripples and the last foam breaks apart, slow push in.")]),
+ dict(id="m1", vo="हवा का भी यही इलाज है। ए क्यू आई नापने वाली मशीनों के आसपास... पानी का छिड़काव। हवा साफ़ नहीं होती... बस आँकड़े साफ़ हो जाते हैं।",
+  cap="हवा का भी यही इलाज है। AQI नापने वाली मशीनों के आसपास... पानी का छिड़काव। हवा साफ़ नहीं होती... बस आँकड़े साफ़ हो जाते हैं।", shots=[
+  ("aqi_spray", "A water tanker truck with a large anti-smog mist cannon spraying a huge cloud of water mist right next to a small white air quality monitoring station cabin with sensor inlets and an antenna on its roof, beside a busy smoggy Delhi road." + STYLE,
+   "The mist cannon keeps spraying a wide cloud of water around the white monitoring cabin while smoggy traffic passes, slow pan from the truck to the cabin."),
+  ("aqi_close", "Close-up of the metal sensor inlets on the roof of a white air quality monitoring station, fine water mist and droplets falling all around them, thick brown smog and blurred traffic in the background." + STYLE,
+   "Water mist falls and droplets run down the sensor inlets while the smog hangs heavy behind, slow push in.")]),
+ dict(id="s1", vo="और जिन पर ज़िम्मेदारी थी? जब शहर घुट रहा था... वो स्विट्ज़रलैंड की साफ़ हवा में थे।", shots=[
+  ("plane", "A passenger jet climbing steeply out of a thick flat brown layer of smog covering a city into a perfectly clear blue sky above, seen from the side, sunlight on its wings." + WARM,
+   "The jet climbs out of the brown smog layer into the clear blue sky, the city vanishes below in haze."),
+  ("swiss", "Seen strictly from behind: an anonymous Indian official in a white kurta-pyjama, dark sleeveless jacket and a woollen overcoat standing on a luxury hotel terrace, arms relaxed on the railing, facing snow-covered Swiss Alps and a blue lake under a crystal-clear blue sky, a cup of tea on the railing, face not visible." + WARM,
+   "The man seen from behind takes a long deep breath of the clean mountain air and stretches his arms contentedly, steam rises from the tea cup, slow push in.")]),
+ dict(id="f1", title=("ज़िम्मेदार कौन?", None, None),
+  vo="पूछो... ज़िम्मेदार कौन? तो जवाब में मिलती है... बस एक उँगली। हर कुर्सी... दूसरी कुर्सी की तरफ़ इशारा करती है।", shots=[
+  ("mics", None, "Reporters jostle and push microphones forward, camera flashes pop, the man in the white kurta keeps jabbing his pointing finger away to the side, his face never in frame."),
+  ("circle", None, "Seen from directly above, the men in white kurtas keep pointing and gesturing at one another in turn, the camera slowly rotates overhead.")]),
+ dict(id="g1", vo="लोग सड़कों पर उतरे। माँओं ने तख़्तियाँ उठाईं। छात्रों ने आवाज़ उठाई। पर हर साल... वही वादे... वही धुआँ।", shots=[
+  ("mothers", None, "The masked mothers hold their children close and lift their placards, the crowd behind them moves, handheld documentary camera."),
+  ("students", None, "The students shout slogans and pump their fists in rhythm, candle flames flicker, smog drifts through the street lights."),
+  ("placards", None, "Smog drifts over the empty wet road, an abandoned cardboard placard flutters in the wind, distant street lights glow, slow push in.")]),
+ dict(id="h1", vo="ज़रा सोचिए... हम अपने बच्चों के लिए क्या छोड़कर जा रहे हैं? एक ज़हरीली हवा... एक मरी हुई नदी... और खिड़की के पीछे क़ैद बचपन।", shots=[
+  ("father", None, "The father and his small daughter walk hand in hand away from the camera down the road and slowly fade into the thick smog."),
+  ("window", None, "The little girl's breath fogs the window pane, her small hand slides slowly down the glass as she stares at the grey smog outside.")]),
+ dict(id="h2", vo="एक दिन आपका बच्चा पूछेगा... जब हवा ज़हर बन रही थी... तब आप क्या कर रहे थे?", shots=[
+  ("eyes", None, "The child stares straight into the camera, blinks slowly, and a single tear rolls down onto the mask, extremely slow push in.")]),
+ dict(id="i1", title=("Pollution पर Solution", None, None),
+  vo="अब बहाने नहीं... समाधान चाहिए। पॉल्यूशन पर... सोल्यूशन।", cap="अब बहाने नहीं... समाधान चाहिए।", shots=[
+  ("march", None, "The students walk forward toward the camera with determination, sunlight breaking through the haze behind them, camera tracking backward at low angle.")]),
+ dict(id="i2", vo="साँस लेना कोई एहसान नहीं... हमारा हक़ है। सवाल पूछिए। जवाब माँगिए। एन एस यू आई के साथ आइए।",
+  cap="साँस लेना कोई एहसान नहीं... हमारा हक़ है। सवाल पूछिए। जवाब माँगिए। NSUI के साथ आइए।", shots=[
+  ("crowd", None, "The huge crowd of students raises and waves their hands together, golden sunlight sweeps across them, slow aerial rise.")]),
+ dict(id="i3", end=True, vo="दिल्ली को... साँस लेने दो।", shots=[
+  ("rooftop", None, "The child on the rooftop spreads her arms wider and takes a deep breath as the kite soars in the clear blue sky, camera slowly rises behind her.")]),
 ]
+# stills reused from the first cut: v2 shot id -> v1 image file
+REUSE = dict(kites="a1_0", smog_aerial="a2_0", indiagate="a3_0", boy="b1_0", hospital="b2_0", dadi="c1_0", oxygen="c2_0", dog="d1_0",
+             cow="d2_0", pigeons="d2_1", mics="f1_0", circle="f2_0", mothers="g1_0", students="g1_1", placards="g2_0", father="h1_0",
+             window="h3_0", eyes="h4_0", march="i1_0", crowd="i2_0", rooftop="i3_0")
