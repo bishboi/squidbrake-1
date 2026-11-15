@@ -20,7 +20,7 @@ The villain is the *pointing finger*, not a named person. This keeps the campaig
 | Outdoor workers (rickshaw, vendors, traffic police, delivery riders) | No choice | Receive masks and health check-ups, speak at events |
 | Media and the undecided public | Fatigue ("every year the same story") | Cover the charter and the deadline, not just the smog |
 
-## 3. The film — "Let Delhi Breathe" (3 min)
+## 3. The film — "Let Delhi Breathe" (3 min 29 sec)
 
 File: `campaign/let-delhi-breathe.mp4` · full narration: section 8 · shot list: `campaign/beats.py`
 Every shot is generated video (not slides), with Hindi narration, captions, an original score and ambient sound.
@@ -35,7 +35,8 @@ Every shot is generated video (not slides), with Hindi narration, captions, an o
 | **यमुना** | River under toxic foam, women offering Chhath prayers standing in it | Grief |
 | **इलाज के नाम पर** | Chemical sprayed to hide the foam; water sprayed around AQI monitors — "हवा साफ़ नहीं होती, बस आँकड़े साफ़ हो जाते हैं" | Anger |
 | **स्विट्ज़रलैंड** | A jet climbing out of the smog; a faceless official breathing Alpine air | Bitter irony |
-| ज़िम्मेदार कौन? | Microphones, pointing fingers | Anger |
+| **10 साल AAP, अब BJP** | Secretariat in smog, empty chairs; convoy of sealed SUVs, tea beside an air purifier, a departure gate — all shown faceless | Cold anger |
+| ज़िम्मेदार कौन? | Microphones, pointing fingers; later a direct question to the Chief Minister and the Environment Minister | Anger |
 | आवाज़ें जो दब गईं | Mothers and students protesting, abandoned placards | Defeat |
 | बच्चों की विरासत | Father and daughter fading into smog, girl behind a window, a child's eyes | The emotional peak |
 | Pollution पर Solution | Students marching into sunrise, end card "Let Delhi Breathe" | Resolve |
@@ -51,6 +52,8 @@ a 15-second "आँकड़े साफ़, हवा नहीं" reel, and 
 | 13 of the 20 most polluted cities are in India; Delhi the most polluted capital | IQAir World Air Quality Report 2024 (shown on screen) | Solid; update if a newer edition changes the count |
 | Chemical sprayed on the Yamuna to suppress foam | Delhi Jal Board has sprayed anti-foaming agents before Chhath, widely reported | Solid |
 | Water sprayed around AQI monitoring stations | News videos and opposition allegations; the government has called it routine dust control | **Contested** — keep the clips and dates ready |
+| AAP governed Delhi for ten years, BJP governs now | AAP governments 2015–2025; BJP government since February 2025 | Solid |
+| Sealed cars, air purifiers, children who can study abroad | A general statement about the privilege of those in power; no named person is shown or accused | Keep it general — do not attach it to a named politician or their family without a published source |
 | Those responsible were in Switzerland while the city choked | Supplied by the campaign team | **Not verified by the film-maker — confirm who, when and a source before publishing** |
 
 ## 4. On-ground ideas
@@ -131,12 +134,15 @@ film completion rate, and — the only one that finally matters — a written, d
 > हवा का भी यही इलाज है। AQI नापने वाली मशीनों के आसपास... पानी का छिड़काव। हवा साफ़ नहीं होती... बस आँकड़े साफ़ हो जाते हैं।
 >
 > और जिन पर ज़िम्मेदारी थी? जब शहर घुट रहा था... वो स्विट्ज़रलैंड की साफ़ हवा में थे।
-> पूछो... ज़िम्मेदार कौन? तो जवाब में मिलती है... बस एक उँगली। हर कुर्सी... दूसरी कुर्सी की तरफ़ इशारा करती है।
+> दस साल... आम आदमी पार्टी की सरकार रही। अब भाजपा की सरकार है। सरकारें बदलीं... हवा नहीं बदली।
+> बंद शीशों वाली महँगी गाड़ियाँ... बंगलों में एयर प्यूरीफ़ायर... हाथ में गरम चाय। जिनके बच्चे विदेश की साफ़ हवा में पढ़ सकते हैं... उन्हें आपके बच्चे की खाँसी सुनाई नहीं देती।
+> पूछो... ज़िम्मेदार कौन? तो एक सरकार... दूसरी सरकार पर उँगली उठा देती है।
 > लोग सड़कों पर उतरे। माँओं ने तख़्तियाँ उठाईं। छात्रों ने आवाज़ उठाई। पर हर साल... वही वादे... वही धुआँ।
 >
 > ज़रा सोचिए... हम अपने बच्चों के लिए क्या छोड़कर जा रहे हैं? एक ज़हरीली हवा... एक मरी हुई नदी... और खिड़की के पीछे क़ैद बचपन।
 > एक दिन आपका बच्चा पूछेगा... जब हवा ज़हर बन रही थी... तब आप क्या कर रहे थे?
 >
+> मुख्यमंत्री रेखा गुप्ता जी... पर्यावरण मंत्री जी... दिल्ली आपसे जवाब माँग रही है।
 > अब बहाने नहीं... समाधान चाहिए। Pollution पर... Solution.
 > साँस लेना कोई एहसान नहीं... हमारा हक़ है। सवाल पूछिए। जवाब माँगिए। NSUI के साथ आइए।
 > **दिल्ली को... साँस लेने दो।**
@@ -144,7 +150,8 @@ film completion rate, and — the only one that finally matters — a written, d
 ## 9. Production notes
 
 - Every shot is AI-generated and the film carries an on-screen "सांकेतिक दृश्य | AI-निर्मित" label. Aarav and Shanti Devi are
-  representative characters, not real people. No real politician, party symbol or logo appears; officials are shown faceless.
+  representative characters, not real people. The film names the AAP and BJP governments and addresses the Chief Minister by name, but no real person's face or likeness is generated: officials are shown faceless, and the NSUI leader should appear through real footage or an official photo.
+- Campaign posters and the NSUI emblem in `campaign/brand/` were restored from the T-shirt mock-up; the emblem is a redraw, so swap in the official files when you have them.
 - Narration: `openai/gpt-audio` · stills: `google/gemini-3.1-flash-image` · video shots: `google/gemini-omni-1.2-flash` (image-to-video, 1080p)
   · score: `google/lyria-3-pro-preview`, all through OpenRouter.
 - Rebuild: `OPENROUTER_API_KEY=… python3 gen_assets.py <assets_dir> vo stills videos`, then

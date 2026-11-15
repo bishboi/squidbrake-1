@@ -65,7 +65,7 @@ BEATS = [
   ("chairs", None, "Slow dolly along the row of empty official chairs, dust floating in the dim light, smog pressing against the tall windows.")]),
  dict(id="p2", vo="बंद शीशों वाली महँगी गाड़ियाँ... बंगलों में एयर प्यूरीफ़ायर... हाथ में गरम चाय। जिनके बच्चे विदेश की साफ़ हवा में पढ़ सकते हैं... उन्हें आपके बच्चे की खाँसी सुनाई नहीं देती।", shots=[
   ("convoy", "x", "The convoy of black luxury SUVs with tinted windows speeds past, the masked people at the bus stop cough and turn their faces from the dust, smog swirling behind the cars."),
-  ("tea", "x", "The man, face never visible, lifts the cup and sips his tea calmly, steam rising, the air purifier's green light glowing steadily while brown smog presses on the window, slow push in."),
+  ("tea", "x", "Locked-off close-up: the hands gently stir and tilt the steaming cup of tea on its saucer at chest level, steam curls upward, the air purifier's green light glows steadily and brown smog drifts outside the window. The camera does not move and no head or face ever enters the frame."),
   ("airport", "x", "The teenager walks away toward the departure gate pulling the suitcase, the hand in the white kurta sleeve waves goodbye, an aircraft taxis outside the glass.")]),
  dict(id="f1", title=("ज़िम्मेदार कौन?", None, None),
   vo="पूछो... ज़िम्मेदार कौन? तो एक सरकार... दूसरी सरकार पर उँगली उठा देती है।", shots=[
