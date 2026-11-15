@@ -73,20 +73,21 @@ It is clearly labelled as fiction on screen ("काल्पनिक भवि
 sourcing. Best used as the second release, a week after the first film, and as the opener at campus screenings.
 Build: `FILM=beats2126 python3 gen_assets.py <dir> vo stills videos`, then `FILM=beats2126 python3 render.py <dir> <music.mp3> delhi-2126.mp4`.
 
-## 3c. Comedy skit — "Pollution का Solution — एक खोज" (1 min 39 sec)
+## 3c. Comedy skit — "Pollution का Solution — एक खोज" (about 1 min 50 sec)
 
-File: `campaign/pollution-ka-solution-skit.mp4` · script: `campaign/beats_skit.py`
+File: `campaign/pollution-ka-solution-skit.mp4` · script: `campaign/beats_skit.py` · cast and T-shirt references: `campaign/brand/`
 
 A reel-style satire with speaking characters, comedy music, stings and audience laughter. Three students in the campaign
-T-shirt — Kabir (calm leader), Meera (sarcastic) and Bunty (comic relief) — go looking for a solution.
+T-shirt — the lead (from supplied photos), Meera (sarcastic) and Bunty (comic relief) — go looking for a solution.
 At the first bungalow the gatekeeper says the minister is "घर पर" — his village home, where he left before Diwali because the
 doctor said Delhi's air is harmful ("और हमारे लिए? विटामिन है?"). At the second, the deadpan guard says the minister is in a
-meeting — in Switzerland, "studying what clean air looks like". One door is left: they walk into the Leader of Opposition's
-office through an open gate, come out with a broom, a sapling and masks — "जब तक सरकार नहीं जागती, शुरुआत हम ख़ुद करेंगे… और
-सवाल पूछना बिल्कुल नहीं छोड़ेंगे" — and the film ends on a Yamuna-bank clean-up and a last jab at the camera.
+meeting — in Switzerland, "studying what clean air looks like". So they go straight to the Chief Minister, who tells them
+"AQI तो एक temperature है… किसी भी instrument से नाप लो" and, when corrected, "तो AC चला लो!" They walk out — "जिन्हें AQI का
+मतलब नहीं पता, उनसे solution क्या मिलेगा? शुरुआत हम ख़ुद करेंगे… और सवाल पूछना बिल्कुल नहीं छोड़ेंगे" — to a Yamuna-bank clean-up
+and a last line to camera: "AQI temperature नहीं होता। पर हाँ — जनता का पारा ज़रूर चढ़ रहा है।"
 
-The ministers are unnamed and never shown, and the film is labelled "काल्पनिक व्यंग्य | AI-निर्मित". Rahul Gandhi is not
-generated or voiced: cut a real clip or message from him in between the open-gate shot and the students walking out.
+The ministers are unnamed and never shown; the Chief Minister is an invented character with an invented face, not
+modelled on any real person or photo. The film is labelled "काल्पनिक व्यंग्य | AI-निर्मित".
 Build: `python3 skit_gen.py <dir>` (stills, dialogue clips, transcripts), then `python3 skit.py <dir> <sfx_dir> pollution-ka-solution-skit.mp4`.
 
 ## 4. On-ground ideas
