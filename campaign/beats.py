@@ -59,22 +59,31 @@ BEATS = [
    "The jet climbs out of the brown smog layer into the clear blue sky, the city vanishes below in haze."),
   ("swiss", "Seen strictly from behind: an anonymous Indian official in a white kurta-pyjama, dark sleeveless jacket and a woollen overcoat standing on a luxury hotel terrace, arms relaxed on the railing, facing snow-covered Swiss Alps and a blue lake under a crystal-clear blue sky, a cup of tea on the railing, face not visible." + WARM,
    "The man seen from behind takes a long deep breath of the clean mountain air and stretches his arms contentedly, steam rises from the tea cup, slow push in.")]),
+ dict(id="p1", title=("10 साल AAP  |  अब BJP", "सरकारें बदलीं, हवा नहीं", None),
+  vo="दस साल... आम आदमी पार्टी की सरकार रही। अब भाजपा की सरकार है। सरकारें बदलीं... हवा नहीं बदली।", shots=[
+  ("sachivalaya", "x", "Thick smog drifts across the government secretariat tower, official cars roll through the gate, the dull sun glows behind the building, slow tilt up."),
+  ("chairs", None, "Slow dolly along the row of empty official chairs, dust floating in the dim light, smog pressing against the tall windows.")]),
+ dict(id="p2", vo="बंद शीशों वाली महँगी गाड़ियाँ... बंगलों में एयर प्यूरीफ़ायर... हाथ में गरम चाय। जिनके बच्चे विदेश की साफ़ हवा में पढ़ सकते हैं... उन्हें आपके बच्चे की खाँसी सुनाई नहीं देती।", shots=[
+  ("convoy", "x", "The convoy of black luxury SUVs with tinted windows speeds past, the masked people at the bus stop cough and turn their faces from the dust, smog swirling behind the cars."),
+  ("tea", "x", "The man, face never visible, lifts the cup and sips his tea calmly, steam rising, the air purifier's green light glowing steadily while brown smog presses on the window, slow push in."),
+  ("airport", "x", "The teenager walks away toward the departure gate pulling the suitcase, the hand in the white kurta sleeve waves goodbye, an aircraft taxis outside the glass.")]),
  dict(id="f1", title=("ज़िम्मेदार कौन?", None, None),
-  vo="पूछो... ज़िम्मेदार कौन? तो जवाब में मिलती है... बस एक उँगली। हर कुर्सी... दूसरी कुर्सी की तरफ़ इशारा करती है।", shots=[
+  vo="पूछो... ज़िम्मेदार कौन? तो एक सरकार... दूसरी सरकार पर उँगली उठा देती है।", shots=[
   ("mics", None, "Reporters jostle and push microphones forward, camera flashes pop, the man in the white kurta keeps jabbing his pointing finger away to the side, his face never in frame."),
   ("circle", None, "Seen from directly above, the men in white kurtas keep pointing and gesturing at one another in turn, the camera slowly rotates overhead.")]),
  dict(id="g1", vo="लोग सड़कों पर उतरे। माँओं ने तख़्तियाँ उठाईं। छात्रों ने आवाज़ उठाई। पर हर साल... वही वादे... वही धुआँ।", shots=[
-  ("mothers", None, "The masked mothers hold their children close and lift their placards, the crowd behind them moves, handheld documentary camera."),
-  ("students", None, "The students shout slogans and pump their fists in rhythm, candle flames flicker, smog drifts through the street lights."),
+  ("mothers", None, "The masked mothers hold their children close and lift their campaign placards, the crowd behind them moves, handheld documentary camera."),
   ("placards", None, "Smog drifts over the empty wet road, an abandoned cardboard placard flutters in the wind, distant street lights glow, slow push in.")]),
  dict(id="h1", vo="ज़रा सोचिए... हम अपने बच्चों के लिए क्या छोड़कर जा रहे हैं? एक ज़हरीली हवा... एक मरी हुई नदी... और खिड़की के पीछे क़ैद बचपन।", shots=[
   ("father", None, "The father and his small daughter walk hand in hand away from the camera down the road and slowly fade into the thick smog."),
   ("window", None, "The little girl's breath fogs the window pane, her small hand slides slowly down the glass as she stares at the grey smog outside.")]),
  dict(id="h2", vo="एक दिन आपका बच्चा पूछेगा... जब हवा ज़हर बन रही थी... तब आप क्या कर रहे थे?", shots=[
   ("eyes", None, "The child stares straight into the camera, blinks slowly, and a single tear rolls down onto the mask, extremely slow push in.")]),
+ dict(id="p3", vo="मुख्यमंत्री रेखा गुप्ता जी... पर्यावरण मंत्री जी... दिल्ली आपसे जवाब माँग रही है।", shots=[
+  ("students", None, "The students shout slogans and pump their fists in rhythm holding their campaign placards high, candle flames flicker, smog drifts through the street lights.")]),
  dict(id="i1", title=("Pollution पर Solution", None, None),
   vo="अब बहाने नहीं... समाधान चाहिए। पॉल्यूशन पर... सोल्यूशन।", cap="अब बहाने नहीं... समाधान चाहिए।", shots=[
-  ("march", None, "The students walk forward toward the camera with determination, sunlight breaking through the haze behind them, camera tracking backward at low angle.")]),
+  ("march", None, "The students walk forward toward the camera with determination holding their campaign placards high, sunlight breaking through the haze behind them, camera tracking backward at low angle.")]),
  dict(id="i2", vo="साँस लेना कोई एहसान नहीं... हमारा हक़ है। सवाल पूछिए। जवाब माँगिए। एन एस यू आई के साथ आइए।",
   cap="साँस लेना कोई एहसान नहीं... हमारा हक़ है। सवाल पूछिए। जवाब माँगिए। NSUI के साथ आइए।", shots=[
   ("crowd", None, "The huge crowd of students raises and waves their hands together, golden sunlight sweeps across them, slow aerial rise.")]),

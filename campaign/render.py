@@ -66,12 +66,20 @@ def make_titles(total):
             if src: lines.append((src, F(CAP, 30), (255, 255, 255, 215)))
             T.append(dict(layer=text_layer(lines, 240 if small else 300), t0=b["t0"] + b["d"] * 0.25, t1=b["t1"] - 0.15, fi=0.6, fo=0.5))
     e = [b for b in BEATS if b.get("end")][0]; t0 = e["t0"] + e["d"] * 0.4
-    T.append(dict(layer=Image.new("RGBA", (W, H), (0, 0, 0, 140)), t0=t0, t1=total + 1, fi=1.5, fo=0.5, full=True))
-    card = text_layer([("Let Delhi", ImageFont.truetype(INTER % "ExtraBoldItalic", 150), WHITE), ("Breathe", ImageFont.truetype(INTER % "BlackItalic", 190), GREEN)], 190)
-    d = ImageDraw.Draw(card); d.rounded_rectangle([W // 2 - 330, 632, W // 2 + 330, 644], 6, fill=SAFFRON)
+    T.append(dict(layer=Image.new("RGBA", (W, H), (0, 0, 0, 185)), t0=t0, t1=total + 1, fi=1.5, fo=0.5, full=True))
+    # end card: campaign poster on the left, slogan and NSUI emblem on the right
+    card = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ph = 800; po = Image.open(f"{HERE}/brand/let-delhi-breathe.png").convert("RGB")
+    po = po.resize((int(po.width * ph / po.height), ph), Image.LANCZOS); mask = Image.new("L", po.size, 0)
+    ImageDraw.Draw(mask).rounded_rectangle([0, 0, po.width - 1, ph - 1], 28, fill=255); px = 250; py = (H - ph) // 2
+    sh = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(sh).rounded_rectangle([px, py + 14, px + po.width, py + ph + 14], 28, fill=(0, 0, 0, 200))
+    card = Image.alpha_composite(card, sh.filter(ImageFilter.GaussianBlur(22))); card.paste(po, (px, py), mask)
     T.append(dict(layer=card, t0=t0 + 0.3, t1=total + 1, fi=1.0, fo=0.5))
-    T.append(dict(layer=text_layer([("दिल्ली को साँस लेने दो", F(SER, 78), WHITE), ("Pollution पर Solution   |   NSUI", F(BIG, 50), WHITE)], 690),
-                  t0=t0 + 1.4, t1=total + 1, fi=1.0, fo=0.5))
+    txt = Image.new("RGBA", (W, H), (0, 0, 0, 0)); cx = px + po.width + (W - px - po.width) // 2 - 40
+    tl = text_layer([("दिल्ली को", F(SER, 120), WHITE), ("साँस लेने दो", F(SER, 120), GREEN), ("Pollution पर Solution", F(BIG, 60), WHITE)], 190)
+    txt.paste(tl, (cx - W // 2, 0), tl); ImageDraw.Draw(txt).rounded_rectangle([cx - 230, 560, cx + 230, 570], 5, fill=SAFFRON)
+    em = Image.open(f"{HERE}/brand/nsui-emblem.png").convert("RGB").resize((230, 230), Image.LANCZOS); cm = Image.new("L", (230, 230), 0)
+    ImageDraw.Draw(cm).ellipse([2, 2, 227, 227], fill=255); txt.paste(em, (cx - 115, 710), cm)
+    T.append(dict(layer=txt, t0=t0 + 1.2, t1=total + 1, fi=1.0, fo=0.5))
     return T
 
 # ---------- video ----------

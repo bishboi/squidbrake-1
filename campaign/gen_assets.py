@@ -12,7 +12,7 @@ SYS = ("You are the narrator of an emotional Hindi documentary film about pollut
        "trailer narrator; measured pace, not slow; real feeling and restraint. Treat '...' as a short dramatic pause. "
        "Natural Hindustani pronunciation. Tone for this line: {tone}")
 TONE = {"a": "wistful, then heavy and factual", "b": "tender and heartbroken", "c": "tender and heartbroken", "d": "soft, aching compassion",
-        "y": "grief turning to quiet anger", "m": "bitter, ironic", "s": "cold, bitter irony", "f": "controlled anger",
+        "y": "grief turning to quiet anger", "m": "bitter, ironic", "p": "cold, controlled anger, direct", "s": "cold, bitter irony", "f": "controlled anger",
         "g": "weary, defeated", "h": "intimate, pleading, the emotional peak", "i": "rising, resolute, powerful, a call to action"}
 os.makedirs(OUT, exist_ok=True)
 
@@ -40,7 +40,7 @@ def vo(b):
 
 def still(s):
     sid, prompt, _ = s; p = f"{OUT}/still_{sid}.png"
-    if os.path.exists(p) or not prompt: return
+    if os.path.exists(p) or not prompt or prompt == "x": return
     for attempt in range(4):
         try:
             j = requests.post(API + "/chat/completions", headers=H, timeout=400, json={"model": "google/gemini-3.1-flash-image",
