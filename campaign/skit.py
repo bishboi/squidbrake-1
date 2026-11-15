@@ -9,8 +9,8 @@ import beats_skit as B
 TMP = R.TMP; os.makedirs(TMP, exist_ok=True); run, probe = R.run, R.probe
 TAIL = 5.5; t = 0.0; caps = []; shots = []; segs = []; cues = []; hope_at = None
 for s in B.SCENES:
-    clip = f"{D}/clip_{s['id']}.mp4"; tr = json.load(open(f"{D}/tr_{s['id']}.json")) if s["lines"] else []
-    d = float(probe(clip, "format=duration")); end = min(d - 0.05, max(x["end"] for x in tr) + 1.0) if tr else d - 0.05
+    clip = f"{D}/clip_{s['id']}.mp4"; tr = json.load(open(f"{D}/tr_{s['id']}.json")) if os.path.exists(f"{D}/tr_{s['id']}.json") else []
+    d = float(probe(clip, "format=duration")); end = min(d - 0.05, max(x["end"] for x in tr) + 1.0) if tr and s["lines"] else d - 0.05
     last = s is B.SCENES[-1]; seg = f"{TMP}/sk_{s['id']}.mp4"
     run("-i", clip, "-t", f"{end:.2f}", "-vf", f"scale={R.W}:{R.H}:flags=lanczos,fps={R.FPS},setsar=1" + (f",tpad=stop_mode=clone:stop_duration={TAIL}" if last else "") + ",format=yuv420p",
         "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "14", seg)

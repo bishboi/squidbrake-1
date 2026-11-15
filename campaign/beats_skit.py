@@ -56,7 +56,7 @@ SCENES = [
  dict(id="d2", dur=10, refs=["cast"],
   still="The three students stride out of the same office gate toward the camera, energised and smiling: KABIR in front carrying a broom over his shoulder, MEERA holding a small tree sapling in a pot, BUNTY carrying a stack of pollution masks and garbage sacks. Golden evening light cutting through the haze, low angle hero shot.",
   action="They walk toward the camera with determination. KABIR says: \"जवाब मिल गया। जब तक सरकार नहीं जागती... शुरुआत हम ख़ुद करेंगे।\" MEERA adds sharply: \"और सवाल पूछना... बिल्कुल नहीं छोड़ेंगे।\" BUNTY raises a fist.",
-  lines=[("कबीर", "जवाब मिल गया। जब तक सरकार नहीं जागती... शुरुआत हम ख़ुद करेंगे।"), ("मीरा", "और सवाल पूछना... बिल्कुल नहीं छोड़ेंगे।")]),
+  lines=[("कबीर", "जब तक सरकार नहीं जागती... शुरुआत हम ख़ुद करेंगे।"), ("मीरा", "और सवाल पूछना... बिल्कुल नहीं छोड़ेंगे।")]),
  dict(id="m1", dur=8, refs=["cast"], chyron="Pollution पर Solution — शुरुआत हम से",
   still="Wide shot on the bank of the Yamuna in Delhi at golden hour: dozens of young student volunteers in the same white polo T-shirts cleaning the riverbank, filling sacks with plastic waste and planting saplings; in the foreground KABIR sweeping, MEERA planting a sapling, BUNTY struggling comically with a huge garbage sack. Haze, sunlight, hopeful mood.",
   action="The volunteers work with energy, KABIR sweeps, MEERA presses soil around the sapling, BUNTY heaves the huge sack onto his shoulder and wobbles, others cheer. Nobody speaks; cheerful crowd sounds.", lines=[]),
