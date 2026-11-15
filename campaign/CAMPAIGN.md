@@ -73,7 +73,7 @@ It is clearly labelled as fiction on screen ("काल्पनिक भवि
 sourcing. Best used as the second release, a week after the first film, and as the opener at campus screenings.
 Build: `FILM=beats2126 python3 gen_assets.py <dir> vo stills videos`, then `FILM=beats2126 python3 render.py <dir> <music.mp3> delhi-2126.mp4`.
 
-## 3c. Comedy skit — "Pollution का Solution — एक खोज" (about 1 min 50 sec)
+## 3c. Comedy skit — "Pollution का Solution — एक खोज" (2 min 6 sec)
 
 File: `campaign/pollution-ka-solution-skit.mp4` · script: `campaign/beats_skit.py` · cast and T-shirt references: `campaign/brand/`
 
@@ -86,8 +86,12 @@ meeting — in Switzerland, "studying what clean air looks like". So they go str
 मतलब नहीं पता, उनसे solution क्या मिलेगा? शुरुआत हम ख़ुद करेंगे… और सवाल पूछना बिल्कुल नहीं छोड़ेंगे" — to a Yamuna-bank clean-up
 and a last line to camera: "AQI temperature नहीं होता। पर हाँ — जनता का पारा ज़रूर चढ़ रहा है।"
 
-The ministers are unnamed and never shown; the Chief Minister is an invented character with an invented face, not
-modelled on any real person or photo. The film is labelled "काल्पनिक व्यंग्य | AI-निर्मित".
+Nameplates name real office-holders (Bhupender Yadav on the first gate, Rekha Gupta on the Chief Minister's desk). The
+first minister is never shown, and the Chief Minister is played by an invented face that is not modelled on any real
+person or photo. The film opens on a card saying it is fictional satire with AI-made visuals and voices, and carries a
+"काल्पनिक व्यंग्य | AI-निर्मित" label throughout. Because real people are named, have the jokes attached to them
+(leaving Delhi before Diwali on a doctor's advice, the Switzerland trip, the AC line) checked by your legal team
+before release, and follow the Election Commission's rules on labelling synthetic content.
 Build: `python3 skit_gen.py <dir>` (stills, dialogue clips, transcripts), then `python3 skit.py <dir> <sfx_dir> pollution-ka-solution-skit.mp4`.
 
 ## 4. On-ground ideas
