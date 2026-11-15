@@ -2,8 +2,8 @@
 Usage: python3 render.py <assets_dir> <music.mp3> <out.mp4>      (PREVIEW=t1,t2 dumps stills instead)"""
 import os, sys, math, subprocess
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
-from beats import BEATS
-from timeline import build, XF
+from timeline import build, XF, M
+BEATS = M.BEATS
 A, MUSIC, OUT = sys.argv[1:4]
 HERE = os.path.dirname(os.path.abspath(__file__)); TMP = os.path.join(A, "_render")
 W, H, FPS = 1920, 1080, 25
@@ -48,7 +48,7 @@ def static_overlay():
             r = math.hypot((x - W / 16) / (W / 16), (y - H / 16) / (H / 16)); p[x, y] = int(min(1, max(0, r - 0.6) / 0.85) * 170)
     ov.putalpha(px.resize((W, H), Image.BICUBIC)); d = ImageDraw.Draw(ov)
     d.rectangle([0, 0, W, 60], fill=(0, 0, 0, 255)); d.rectangle([0, H - 60, W, H], fill=(0, 0, 0, 255))
-    mtext(d, W - 230, 14, "सांकेतिक दृश्य  |  AI-निर्मित", F(CAP, 22), (255, 255, 255, 130)); return ov
+    mtext(d, W - 230, 14, getattr(M, "TAGLINE", "सांकेतिक दृश्य  |  AI-निर्मित"), F(CAP, 22), (255, 255, 255, 130)); return ov
 def fade(t, t0, t1, fi=0.35, fo=0.35):
     return 0.0 if t < t0 or t > t1 else max(0.0, min(1.0, (t - t0) / fi, (t1 - t) / fo))
 def paste(fr, layer, a):
@@ -86,10 +86,11 @@ def make_titles(total):
 def segments(shots):
     """one normalised 1080p/25fps segment per shot, cut (or gently slowed) to the footage it must cover"""
     for i, s in enumerate(shots):
-        s["seg"] = f"{TMP}/seg_{i:02d}.mp4"; clip = f"{A}/clip_{s['id']}.mp4"; need = s["need"] + 0.08
+        s["seg"] = f"{TMP}/seg_{i:02d}.mp4"; clip = f"{A}/clip_{s.get('reuse') or s['id']}.mp4"; need = s["need"] + 0.08
+        look = ",hue=s=0.35,eq=contrast=1.08:brightness=-0.03,noise=alls=14:allf=t" if s.get("archive") else ""
         if os.path.exists(clip):
             d = float(probe(clip, "format=duration")); slow = max(1.0, need / (d - 0.1))
-            run("-i", clip, "-vf", f"setpts={slow:.4f}*PTS,scale={W}:{H}:flags=lanczos,fps={FPS},setsar=1,format=yuv420p", "-t", f"{need:.3f}", "-an",
+            run("-i", clip, "-vf", f"setpts={slow:.4f}*PTS,scale={W}:{H}:flags=lanczos,fps={FPS},setsar=1{look},format=yuv420p", "-t", f"{need:.3f}", "-an",
                 "-c:v", "libx264", "-preset", "veryfast", "-crf", "14", s["seg"])
             s["amb"] = clip if probe(clip, "stream=codec_type").count("audio") else None
         else:  # no generated clip: slow push-in on the still
@@ -104,8 +105,8 @@ def base_video(shots, out):
         fl.append(f"{prev}[{i}:v]xfade=transition=fade:duration={XF}:offset={shots[i]['a']:.3f}[x{i}]"); prev = f"[x{i}]"
     run(*ins, "-filter_complex", ";".join(fl), "-map", prev, "-c:v", "libx264", "-preset", "veryfast", "-crf", "14", "-pix_fmt", "yuv420p", out)
 
-def composite(base, out, caps, titles, total, only=None):
-    ov = static_overlay(); capl = {}; black = Image.new("RGB", (W, H)); nf = int(total * FPS)
+def composite(base, out, caps, titles, total, only=None, shots=()):
+    ov = static_overlay(); capl = {}; tagl = {}; black = Image.new("RGB", (W, H)); nf = int(total * FPS)
     dec = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-i", base, "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], stdout=subprocess.PIPE)
     enc = None if only else subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
         "-c:v", "libx264", "-preset", "medium", "-crf", "23", "-maxrate", "3200k", "-bufsize", "6400k", "-pix_fmt", "yuv420p", out], stdin=subprocess.PIPE)
@@ -118,6 +119,13 @@ def composite(base, out, caps, titles, total, only=None):
         for tl in titles:
             a = fade(t, tl["t0"], tl["t1"], tl["fi"], tl["fo"])
             if a > 0: paste(fr, tl["layer"], a)
+        for s in shots:
+            a = fade(t, s["t0"] + 0.15, s["t1"] - 0.15, 0.3, 0.3) if s.get("tag") else 0
+            if a > 0:
+                if s["tag"] not in tagl:
+                    f = F(BIG, 40); L = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(L); w = int(mlen(d, s["tag"], f)) + 44
+                    d.rounded_rectangle([70, 92, 70 + w, 156], 10, fill=(0, 0, 0, 150)); d.rectangle([70, 92, 78, 156], fill=SAFFRON); mtext(d, 70 + w // 2 + 4, 98, s["tag"], f, WHITE); tagl[s["tag"]] = L
+                paste(fr, tagl[s["tag"]], a)
         for i, c in enumerate(caps):
             a = fade(t, c["t0"] - 0.1, c["t1"] + 0.1, 0.25, 0.25)
             if a > 0:
@@ -154,8 +162,8 @@ if __name__ == "__main__":
     base = f"{TMP}/base.mp4"
     if not os.environ.get("REUSE_BASE"): segments(shots); base_video(shots, base)
     else:
-        for s in shots: c = f"{A}/clip_{s['id']}.mp4"; s["amb"] = c if os.path.exists(c) and "audio" in probe(c, "stream=codec_type") else None
+        for s in shots: c = f"{A}/clip_{s.get('reuse') or s['id']}.mp4"; s["amb"] = c if os.path.exists(c) and "audio" in probe(c, "stream=codec_type") else None
     if os.environ.get("PREVIEW"):
-        composite(base, None, caps, titles, total, only={int(float(x) * FPS) for x in os.environ["PREVIEW"].split(",")}); sys.exit()
-    composite(base, f"{TMP}/video.mp4", caps, titles, total); audio(shots, total, f"{TMP}/audio.m4a")
+        composite(base, None, caps, titles, total, shots=shots, only={int(float(x) * FPS) for x in os.environ["PREVIEW"].split(",")}); sys.exit()
+    composite(base, f"{TMP}/video.mp4", caps, titles, total, shots=shots); audio(shots, total, f"{TMP}/audio.m4a")
     run("-i", f"{TMP}/video.mp4", "-i", f"{TMP}/audio.m4a", "-c", "copy", "-movflags", "+faststart", "-shortest", OUT); print("wrote", OUT)

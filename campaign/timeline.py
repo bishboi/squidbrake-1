@@ -1,6 +1,7 @@
 """Shared timing: processes narration clips and lays beats / shots / captions on the timeline."""
 import os, re, subprocess, wave
-from beats import BEATS
+import importlib
+M = importlib.import_module(os.environ.get('FILM', 'beats')); BEATS = M.BEATS
 LEAD, GAP, XF, TAIL, TEMPO = 1.2, 0.3, 0.6, 6.0, 1.10
 
 def _dur(p):
@@ -17,8 +18,10 @@ def build(A):
                 "silenceremove=stop_periods=-1:stop_duration=0.45:stop_threshold=-42dB:stop_silence=0.4,"
                 f"atempo={TEMPO},loudnorm=I=-17:TP=-2:LRA=9,aresample=48000", "-ac", "1", o], check=True)
         b["d"] = _dur(o); b["t0"] = t; span = b["d"] + GAP + (TAIL if b.get("end") else 0); n = len(b["shots"])
-        for i, (sid, still, motion) in enumerate(b["shots"]):
-            shots.append(dict(id=sid, still=still, motion=motion, t0=t + span * i / n, t1=t + span * (i + 1) / n))
+        for i, sh in enumerate(b["shots"]):
+            sid, x, y = sh; o = y if isinstance(y, dict) else {}; motion = x if isinstance(y, dict) else y
+            shots.append(dict(id=sid, motion=motion, first=o.get("first", sid), last=o.get("last"), tag=o.get("tag"), reuse=o.get("reuse"),
+                              archive=o.get("archive"), t0=t + span * i / n, t1=t + span * (i + 1) / n))
         parts = [p.strip(" —") for p in re.split(r"\.\.\.|(?<=[।?])|—", b.get("cap", b["vo"])) if p.strip(" —")]
         merged = []
         for p in parts:  # merge tiny fragments so captions don't flicker
