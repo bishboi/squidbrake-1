@@ -10,7 +10,7 @@ TMP = R.TMP; os.makedirs(TMP, exist_ok=True); run, probe = R.run, R.probe
 TAIL = 5.5; t = 0.0; caps = []; shots = []; segs = []; cues = []; hope_at = None
 for s in B.SCENES:
     clip = f"{D}/clip_{s['id']}.mp4"; tr = json.load(open(f"{D}/tr_{s['id']}.json")) if os.path.exists(f"{D}/tr_{s['id']}.json") else []
-    d = float(probe(clip, "format=duration")); end = min(d - 0.05, max(x["end"] for x in tr) + 1.0) if tr and s["lines"] else d - 0.05
+    d = float(probe(clip, "format=duration")); end = min(d - 0.05, max(x["end"] for x in tr) + 1.7) if tr and s["lines"] else d - 0.05
     last = s is B.SCENES[-1]; seg = f"{TMP}/sk_{s['id']}.mp4"
     run("-i", clip, "-t", f"{end:.2f}", "-vf", f"scale={R.W}:{R.H}:flags=lanczos,fps={R.FPS},setsar=1" + (f",tpad=stop_mode=clone:stop_duration={TAIL}" if last else "") + ",format=yuv420p",
         "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "14", seg)
@@ -31,6 +31,11 @@ for s in B.SCENES:
 total = t + TAIL; open(f"{TMP}/sk.txt", "w").write("".join(f"file '{TMP}/sk_{i}.mp4'\n" for i, _, _ in segs))
 run("-f", "concat", "-safe", "0", "-i", f"{TMP}/sk.txt", "-c", "copy", f"{TMP}/sk_base.mp4")
 R.BEATS[:] = [dict(id="end", end=True, t0=t + 0.3, d=0.0)]; titles = R.make_titles(total)
+# opening disclaimer: the skit names real office-holders, so say plainly that it is fiction
+from PIL import Image
+box = Image.new("RGBA", (R.W, R.H), (0, 0, 0, 215)); tl = R.text_layer([("यह एक काल्पनिक व्यंग्य है", R.F(R.BIG, 84), R.WHITE),
+    ("पात्र, घटनाएँ और संवाद काल्पनिक हैं  |  सभी दृश्य और आवाज़ें AI-निर्मित हैं", R.F(R.CAP, 40), R.WHITE)], 420)
+box.alpha_composite(tl); titles.insert(0, dict(layer=box, t0=0.0, t1=3.6, fi=0.01, fo=0.5)); LEADIN = 3.4
 R.composite(f"{TMP}/sk_base.mp4", f"{TMP}/sk_video.mp4", caps, titles, total, shots=shots)
 # ---- audio ----
 ins = []; fl = []; n = 0; dia = []

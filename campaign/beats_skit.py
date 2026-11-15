@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Script for the comedy skit "Pollution का Solution — एक खोज". Fictional satire: the ministers are unnamed and never shown; the Chief Minister is an invented character, not modelled on any real person.
+"""Script for the comedy skit "Pollution का Solution — एक खोज". Fictional satire. Nameplates name real office-holders, but the first minister is never shown and the Chief Minister is played by an invented face that is not modelled on any real person or photo.
 Each scene: id, dur (seconds), refs (cast sheets used for the first frame), still (first-frame prompt),
 action (what happens, with the spoken lines), lines [(speaker, text)], optional chyron / sfx at the end of the scene."""
 TAGLINE = "काल्पनिक व्यंग्य  |  AI-निर्मित"
@@ -10,21 +10,21 @@ CAST = {  # reference sheets generated once, then passed to every still
  "guard2": ("Photorealistic portrait, plain light grey studio background: a 30-year-old Indian VIP security guard, muscular, clean-shaven with slick gelled hair, dark aviator sunglasses, tight grey safari suit, a curly earpiece wire, arms crossed, deadpan face. Waist-up, front view. No text."),
 }
 LOOK = ("Photorealistic cinematic film still from a comedy drama, 35mm lens, smoggy hazy Delhi daylight with a warm-grey palette. "
-        "The students are exactly the three from the first reference image — KABIR (the lead: the tall man with short dark side-swept hair and a neat short beard, exactly as in the first reference image and in the photos of the last reference image), MEERA (high ponytail, round black glasses), "
+        "The students are exactly the three from the first reference image — KABIR (the lead and hero of the film: the tall man with short dark side-swept hair and a neat short beard, exactly as in the first reference image and in the photos of the last reference image; broad-shouldered, upright, calm and commanding, clearly the leader and the visual focus of the shot, flattering light on his face), MEERA (high ponytail, round black glasses), "
         "BUNTY (short, chubby, curly hair, mask under his chin) — same faces, same white polo T-shirts (poster print on the chest, small NSUI wordmark, tipped collar, no portrait photo on the shirt), blue jeans. "
-        "No captions, no subtitles, no extra text. ")
+        "No captions, no subtitles, no extra text unless the scene description asks for a nameplate. ")
 VOICES = ("Voices — KABIR: calm, warm young male voice. MEERA: sharp, sarcastic young female voice. BUNTY: high-pitched, excitable, funny young male voice. "
           "RAMLAL: raspy, lazy old man's voice. GUARD: flat, robotic deadpan male voice. CM: cheerful, over-confident middle-aged woman's voice. ")
 RULES = ("Comedy scene, realistic, clear spoken Hindi dialogue with accurate lip-sync, good comic timing. One continuous shot, no cuts. "
          "Only the lines given are spoken, exactly as written, in Hindi. Natural ambient sound only, no music, no laughter track, no subtitles or text on screen. ")
 
 SCENES = [
- dict(id="c1", dur=10, refs=["cast"], chyron="Pollution का Solution — एक खोज",
+ dict(id="c1", dur=12, refs=["cast"], chyron="Pollution का Solution — एक खोज",
   still="Medium shot from the front: the three students walk side by side toward the camera down a Delhi street drowned in thick smog, traffic and blurred headlights behind. KABIR walks in the centre slightly ahead as the leader, BUNTY on one side holds up his phone and stares at it in horror, MEERA on the other side waves smoke from her face.",
   action="The three walk toward the camera coughing. BUNTY stares at his phone and exclaims: \"AQI एक हज़ार! भाई, ये हवा है या तंदूर का धुआँ?\" KABIR, calm and determined, says: \"बस! आज मंत्री जी से solution लेकर ही लौटेंगे।\" MEERA nods.",
   lines=[("बंटी", "AQI एक हज़ार! भाई, ये हवा है या तंदूर का धुआँ?"), ("कबीर", "बस! आज मंत्री जी से solution लेकर ही लौटेंगे।")]),
  dict(id="g1a", dur=10, refs=["cast", "guard1"], chyron="मंत्री नंबर 1 का बंगला",
-  still="Outside the tall ornate black iron gate of a grand white government bungalow. The three students stand on the left facing the gate, KABIR in front. On the right the gatekeeper RAMLAL from the second reference image stands in the half-open small side gate holding his glass of chai, looking at them. Medium wide shot, all four clearly visible.",
+  still="Outside the tall ornate black iron gate of a grand white government bungalow. On the white gate pillar a polished brass nameplate reads exactly \"BHUPENDER YADAV\" in clear capital letters. The three students stand on the left facing the gate, KABIR in front and nearest the camera, standing tall. On the right the gatekeeper RAMLAL from the second reference image stands in the half-open small side gate holding his glass of chai, looking at them. Medium wide shot, all four clearly visible.",
   action="KABIR says politely: \"नमस्ते अंकल! मंत्री जी से मिलना है। प्रदूषण का solution चाहिए।\" RAMLAL takes a slow sip of chai, nods and replies: \"मंत्री जी? हाँ हाँ... घर पर ही हैं।\" The three students smile with relief and look at each other.",
   lines=[("कबीर", "नमस्ते अंकल! मंत्री जी से मिलना है। प्रदूषण का solution चाहिए।"), ("रामलाल", "मंत्री जी? हाँ हाँ... घर पर ही हैं।")]),
  dict(id="g1b", dur=10, refs=["cast", "guard1"], sfx="boom+laugh",
@@ -51,14 +51,14 @@ SCENES = [
   action="BUNTY sighs: \"अब कहाँ जाएँ? एक गाँव में... एक स्विट्ज़रलैंड में।\" KABIR stands up, dusts his hands and says firmly: \"अब सीधा मुख्यमंत्री जी के पास चलते हैं।\" MEERA puts her glasses back on and gets up.",
   lines=[("बंटी", "अब कहाँ जाएँ? एक गाँव में... एक स्विट्ज़रलैंड में।"), ("कबीर", "अब सीधा मुख्यमंत्री जी के पास चलते हैं।")]),
  dict(id="cm1", dur=12, refs=["cast", "cm"], chyron="मुख्यमंत्री कार्यालय",
-  still="Inside a grand wood-panelled chief minister's office. Behind a huge polished desk sits the CM — the woman from the second reference image, same face, grey-streaked bob hair, gold-rimmed glasses, magenta silk saree — smiling confidently with a cup of tea, a large air purifier glowing green beside the desk. The three students stand in front of the desk facing her, KABIR in the middle and slightly ahead. Medium wide shot with the camera at the end of the desk, so that the CM (left) and the students (right) face each other across the frame and the students' faces and the fronts of their T-shirts are clearly visible in three-quarter view. No flags, no emblems, no party symbols.",
+  still="Inside a grand wood-panelled chief minister's office. Behind a huge polished desk sits the CM — the woman from the second reference image, same face, grey-streaked bob hair, gold-rimmed glasses, magenta silk saree — smiling confidently with a cup of tea, a large air purifier glowing green beside the desk. On the front edge of the desk stands a wooden desk nameplate with brass letters reading exactly \"REKHA GUPTA\" and, smaller below, \"CHIEF MINISTER\". The three students stand in front of the desk facing her, KABIR in the middle and slightly ahead. Medium wide shot with the camera at the end of the desk, so that the CM (left) and the students (right) face each other across the frame and the students' faces and the fronts of their T-shirts are clearly visible in three-quarter view. No flags, no emblems, no party symbols.",
   action="KABIR says respectfully but firmly: \"मैडम, दिल्ली का AQI एक हज़ार के पार है। हमें solution चाहिए।\" The CM waves her hand, smiling with total confidence, and replies: \"अरे बेटा, घबराओ मत! AQI तो एक temperature है... किसी भी instrument से नाप लो।\" The three students freeze and blink at her.",
   lines=[("कबीर", "मैडम, दिल्ली का AQI एक हज़ार के पार है। हमें solution चाहिए।"), ("मुख्यमंत्री", "अरे बेटा, घबराओ मत! AQI तो एक temperature है... किसी भी instrument से नाप लो।")], sfx="scratch"),
  dict(id="cm2", dur=12, refs=["cast", "cm"], sfx="boom+laugh",
-  still="Same chief minister's office, closer shot across the desk: BUNTY on the left with his jaw dropped, MEERA in the middle adjusting her glasses with a pained look, KABIR on the right staring in disbelief; in the foreground right, seen three-quarter from the front, the CM from the second reference image in her magenta saree leaning back in her chair, smiling, pointing at the air conditioner remote on the desk.",
+  still="Same chief minister's office, closer shot across the desk: BUNTY on the left with his jaw dropped, MEERA in the middle adjusting her glasses with a pained look, KABIR on the right staring in disbelief; in the foreground right, seen three-quarter from the front, the CM from the second reference image in her magenta saree leaning back in her chair, smiling, pointing at the air conditioner remote on the desk; on the desk in front of her a wooden desk nameplate with brass letters reading exactly \"REKHA GUPTA\". No flags, no portraits on the wall.",
   action="BUNTY blurts out: \"Temperature?!\" MEERA says slowly, as if explaining to a child: \"मैडम... AQI हवा की quality होती है।\" The CM shrugs cheerfully, picks up the AC remote and says: \"अच्छा? तो... AC चला लो!\" KABIR closes his eyes and sighs.",
   lines=[("बंटी", "Temperature?!"), ("मीरा", "मैडम... AQI हवा की quality होती है।"), ("मुख्यमंत्री", "अच्छा? तो... AC चला लो!")]),
- dict(id="d2", dur=11, refs=["cast"], music="hope",
+ dict(id="d2", dur=12, refs=["cast"], music="hope",
   still="The three students stride out of a grand government building gate toward the camera, determined: KABIR in front and in the centre carrying a broom over his shoulder, MEERA holding a small tree sapling in a pot, BUNTY carrying a stack of pollution masks and garbage sacks. Golden evening light cutting through the haze, low angle hero shot.",
   action="They walk toward the camera with determination. KABIR says: \"जिन्हें AQI का मतलब नहीं पता... उनसे solution क्या मिलेगा? शुरुआत हम ख़ुद करेंगे।\" MEERA adds sharply: \"और सवाल पूछना... बिल्कुल नहीं छोड़ेंगे।\" BUNTY raises a fist.",
   lines=[("कबीर", "जिन्हें AQI का मतलब नहीं पता... उनसे solution क्या मिलेगा? शुरुआत हम ख़ुद करेंगे।"), ("मीरा", "और सवाल पूछना... बिल्कुल नहीं छोड़ेंगे।")]),
