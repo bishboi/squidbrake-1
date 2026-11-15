@@ -100,7 +100,7 @@ def composite(base, out, caps, titles, total, only=None):
     ov = static_overlay(); capl = {}; black = Image.new("RGB", (W, H)); nf = int(total * FPS)
     dec = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-i", base, "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], stdout=subprocess.PIPE)
     enc = None if only else subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
-        "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-maxrate", "10M", "-bufsize", "20M", "-pix_fmt", "yuv420p", out], stdin=subprocess.PIPE)
+        "-c:v", "libx264", "-preset", "medium", "-crf", "23", "-maxrate", "3200k", "-bufsize", "6400k", "-pix_fmt", "yuv420p", out], stdin=subprocess.PIPE)
     for fi in range(nf):
         raw = dec.stdout.read(W * H * 3)
         if len(raw) < W * H * 3: raw = last
