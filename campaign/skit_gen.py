@@ -12,7 +12,7 @@ def clip(s):
     if not os.path.exists(still): edit(still, "16:9", B.LOOK + s["still"], [f"{D}/{r}.png" for r in s["refs"]] + ([f"{D}/hero.png"] if os.path.exists(f"{D}/hero.png") else []))
     if not os.path.exists(out):
         im = Image.open(still).convert("RGB").resize((1920, 1080), Image.LANCZOS); b = io.BytesIO(); im.save(b, "JPEG", quality=92)
-        body = {"model": "google/gemini-omni-1.2-flash", "prompt": B.RULES + (B.VOICES if s["lines"] else "") + s["action"], "duration": s["dur"], "resolution": "1080p",
+        body = {"model": os.environ.get("VIDEO_MODEL", "google/gemini-omni-1.2-flash"), "prompt": B.RULES + (B.VOICES if s["lines"] else "") + s["action"], "duration": s["dur"], "resolution": os.environ.get("VIDEO_RES", "1080p"),
                 "aspect_ratio": "16:9", "generate_audio": True, "frame_images": [{"type": "image_url", "frame_type": "first_frame",
                 "image_url": {"url": "data:image/jpeg;base64," + base64.b64encode(b.getvalue()).decode()}}]}
         for attempt in range(3):
@@ -38,4 +38,5 @@ def clip(s):
     if os.path.exists(tj):
         tr = json.load(open(tj)); print(s["id"], "OK" if len(tr) == len(s["lines"]) else f"MISMATCH want {len(s['lines'])}", [(round(x["start"], 1), round(x["end"], 1), x["text"]) for x in tr], flush=True)
 
-with ThreadPoolExecutor(6) as ex: list(ex.map(clip, B.SCENES))
+ONLY = os.environ.get("ONLY")
+with ThreadPoolExecutor(6) as ex: list(ex.map(clip, [s for s in B.SCENES if not ONLY or s["id"] in ONLY.split(",")]))
