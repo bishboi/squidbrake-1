@@ -10,7 +10,7 @@ CAST = {  # reference sheets generated once, then passed to every still
  "guard2": ("Photorealistic portrait, plain light grey studio background: a 30-year-old Indian VIP security guard, muscular, clean-shaven with slick gelled hair, dark aviator sunglasses, tight grey safari suit, a curly earpiece wire, arms crossed, deadpan face. Waist-up, front view. No text."),
 }
 LOOK = ("Photorealistic cinematic film still from a comedy drama, 35mm lens, smoggy hazy Delhi daylight with a warm-grey palette. "
-        "The students are exactly the three from the first reference image — KABIR (tall, short beard), MEERA (high ponytail, round black glasses), "
+        "The students are exactly the three from the first reference image — KABIR (the lead: the man from the last reference photo — keep his exact face, short dark side-swept hair and light stubble beard, tall and slim), MEERA (high ponytail, round black glasses), "
         "BUNTY (short, chubby, curly hair, mask under his chin) — same faces, same white polo T-shirts with the poster print, blue jeans. "
         "No captions, no subtitles, no extra text. ")
 VOICES = ("Voices — KABIR: calm, warm young male voice. MEERA: sharp, sarcastic young female voice. BUNTY: high-pitched, excitable, funny young male voice. "
@@ -20,9 +20,9 @@ RULES = ("Comedy scene, realistic, clear spoken Hindi dialogue with accurate lip
 
 SCENES = [
  dict(id="c1", dur=10, refs=["cast"], chyron="Pollution का Solution — एक खोज",
-  still="Medium shot from the front: the three students walk side by side toward the camera down a Delhi street drowned in thick smog, traffic and blurred headlights behind. BUNTY holds up his phone and stares at it in horror, MEERA waves smoke from her face, KABIR looks ahead.",
-  action="The three walk toward the camera coughing. BUNTY stares at his phone and exclaims: \"AQI एक हज़ार! भाई, ये हवा है या तंदूर का धुआँ?\" MEERA, annoyed and determined, says: \"बस! आज मंत्री जी से solution लेकर ही लौटेंगे।\" KABIR nods.",
-  lines=[("बंटी", "AQI एक हज़ार! भाई, ये हवा है या तंदूर का धुआँ?"), ("मीरा", "बस! आज मंत्री जी से solution लेकर ही लौटेंगे।")]),
+  still="Medium shot from the front: the three students walk side by side toward the camera down a Delhi street drowned in thick smog, traffic and blurred headlights behind. KABIR walks in the centre slightly ahead as the leader, BUNTY on one side holds up his phone and stares at it in horror, MEERA on the other side waves smoke from her face.",
+  action="The three walk toward the camera coughing. BUNTY stares at his phone and exclaims: \"AQI एक हज़ार! भाई, ये हवा है या तंदूर का धुआँ?\" KABIR, calm and determined, says: \"बस! आज मंत्री जी से solution लेकर ही लौटेंगे।\" MEERA nods.",
+  lines=[("बंटी", "AQI एक हज़ार! भाई, ये हवा है या तंदूर का धुआँ?"), ("कबीर", "बस! आज मंत्री जी से solution लेकर ही लौटेंगे।")]),
  dict(id="g1a", dur=10, refs=["cast", "guard1"], chyron="मंत्री नंबर 1 का बंगला",
   still="Outside the tall ornate black iron gate of a grand white government bungalow. The three students stand on the left facing the gate, KABIR in front. On the right the gatekeeper RAMLAL from the second reference image stands in the half-open small side gate holding his glass of chai, looking at them. Medium wide shot, all four clearly visible.",
   action="KABIR says politely: \"नमस्ते अंकल! मंत्री जी से मिलना है। प्रदूषण का solution चाहिए।\" RAMLAL takes a slow sip of chai, nods and replies: \"मंत्री जी? हाँ हाँ... घर पर ही हैं।\" The three students smile with relief and look at each other.",
