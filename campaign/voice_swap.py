@@ -5,7 +5,7 @@ never overlaps a neighbouring word, and saved as vs_<scene>_<line>.mp3/.json (sp
 Usage: python3 voice_swap.py <clips_dir> <lead_voice_id>      (key is injected by the network proxy)"""
 import os, sys, json, re, unicodedata, subprocess, difflib, requests
 import beats_skit as B
-D, LEAD_VOICE = sys.argv[1], sys.argv[2]; CM_VOICE = os.environ.get("CM_VOICE", "XrExE9yKIg1WjnnlVkGX")
+D, LEAD_VOICE = sys.argv[1], sys.argv[2]; CM_VOICE = os.environ.get("CM_VOICE", "ThT5KcBeYPX3keUQqHPh"); CM_PITCH = float(os.environ.get("CM_PITCH", "-1.5"))   # a deeper, warmer female voice for the invented Chief Minister
 VOICES = {"कबीर": LEAD_VOICE, "मुख्यमंत्री": CM_VOICE}; H = {"xi-api-key": os.environ.get("ELEVENLABS_API_KEY", "proxy-injected")}
 dur = lambda p: float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", p], capture_output=True, text=True).stdout)
 ALIAS = {"पॉल्यूशन": "pollution", "स्विट्जरलैंड": "switzerland", "मैडम": "madam", "अंकल": "uncle"}
@@ -41,6 +41,11 @@ def align(lines, words):
         else: j -= 1
     return hit
 
+def deepen(path):
+    """lower the pitch by CM_PITCH semitones (duration unchanged) and add a little warmth"""
+    f = 2 ** (CM_PITCH / 12); tmp = path + ".d.mp3"
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", path, "-af", f"asetrate=44100*{f:.4f},aresample=44100,atempo={1 / f:.4f},equalizer=f=180:width_type=o:width=1.5:g=3", "-b:a", "128k", tmp], check=True); os.replace(tmp, path)
+
 def clean(path, t0):
     """trim the converted line to its words (+ a short tail) and turn down breaths / stray sounds in the pauses; returns the new start time"""
     r = requests.post("https://api.elevenlabs.io/v1/speech-to-text", headers=H, timeout=200, files={"file": open(path, "rb")}, data={"model_id": "scribe_v1", "timestamps_granularity": "word", "language_code": "hin"})
@@ -72,7 +77,9 @@ for s in B.SCENES:
         r = requests.post(f"https://api.elevenlabs.io/v1/speech-to-speech/{VOICES[who]}?output_format=mp3_44100_128", headers=H, timeout=300, files={"audio": open(wav, "rb")},
             data={"model_id": "eleven_multilingual_sts_v2", "remove_background_noise": "true", "voice_settings": json.dumps({"stability": 0.5, "similarity_boost": 0.85, "style": 0.0, "use_speaker_boost": True})})
         if r.status_code != 200: sys.exit(f"{sid}[{i}] {r.status_code} {r.text[:300]}")
-        open(out, "wb").write(r.content); t0 = clean(out, t0); json.dump({"start": t0, "end": t1}, open(f"{D}/vs_{sid}_{i}.json", "w")); print("swapped", sid, i, who, f"{t0:.1f}-{t1:.1f}", flush=True)
+        open(out, "wb").write(r.content); t0 = clean(out, t0)
+        if who == "मुख्यमंत्री": deepen(out)
+        json.dump({"start": t0, "end": t1}, open(f"{D}/vs_{sid}_{i}.json", "w")); print("swapped", sid, i, who, f"{t0:.1f}-{t1:.1f}", flush=True)
     json.dump(tr, open(f"{D}/tr_{sid}.json", "w"), ensure_ascii=False)
     lastb = max((hit[i][1] for i in hit), default=None)   # first word after the last scripted line = start of any ad-lib; the scene is cut before it
     json.dump({"next_start": (words[lastb + 1]["start"] if lastb is not None and lastb + 1 < len(words) else None)}, open(f"{D}/nxt_{sid}.json", "w"))

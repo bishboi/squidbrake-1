@@ -73,7 +73,7 @@ It is clearly labelled as fiction on screen ("काल्पनिक भवि
 sourcing. Best used as the second release, a week after the first film, and as the opener at campus screenings.
 Build: `FILM=beats2126 python3 gen_assets.py <dir> vo stills videos`, then `FILM=beats2126 python3 render.py <dir> <music.mp3> delhi-2126.mp4`.
 
-## 3c. Comedy skit — "Pollution का Solution — एक खोज" (2 min 35 sec)
+## 3c. Comedy skit — "Pollution का Solution — एक खोज" (2 min 44 sec)
 
 File: `campaign/pollution-ka-solution-skit.mp4` · script: `campaign/beats_skit.py` · cast and T-shirt references: `campaign/brand/`
 
@@ -213,3 +213,5 @@ The film now ends on a short call to action in the lead's own cloned voice (`out
 The outro is built by `outro_visuals.py`: three shots from the film behind the call to action, the NSUI emblem, keyword chips ("जुड़िए", "मास्क बाँटिए", "जागरूक कीजिए") that appear exactly when the lead says them, both campaign posters and a final logo lockup. The voice-over uses ElevenLabs v3, which won a blind ranking against v2 variants.
 
 Audio cleanup: every scene's own audio and every source segment passes through the ElevenLabs voice isolator before mixing (street noise, hiss and stray laughter are removed; noise floor between lines fell from about -45 dB to about -90 dB), and the scene stings (record scratch, bass hit, whoosh) are generated with ElevenLabs sound effects instead of synthesised noise.
+
+The Chief Minister's office is one fixed room (reference in `brand/skit-office.png`: walnut panels, window on the left, white air purifier, beige chair, desk nameplate) used for every CM shot, and her voice is a deeper, warmer stock voice (ElevenLabs "Dorothy" pitched down 1.5 semitones, chosen by blind ranking). The "फिर से नहीं…!" beat is its own shot so the scene has room to breathe.
