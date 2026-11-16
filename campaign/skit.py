@@ -3,9 +3,9 @@ comedy / hope music beds ducked under the dialogue, and reel-style stings (boom,
 Usage: FILM=beats_skit python3 skit.py <clips_dir> <sfx_dir> <out.mp4>"""
 import os, sys, json, subprocess
 D, SFX, OUT = sys.argv[1:4]
-os.environ["FILM"] = "beats_skit"; sys.argv = [sys.argv[0], D, "-", OUT]
+os.environ["FILM"] = os.environ.get("SKIT", "beats_skit"); sys.argv = [sys.argv[0], D, "-", OUT]
 import render as R                      # text, overlay and compositing helpers
-import beats_skit as B
+B = __import__("importlib").import_module(os.environ.get("SKIT", "beats_skit"))   # scene list: beats_skit (default) or another film
 if os.environ.get("SKIP"): B.SCENES[:] = [s for s in B.SCENES if s["id"] not in os.environ["SKIP"].split(",")]   # leave scenes out of a shorter cut
 def lufs(path, ss=None, t=None):
     cmd = ["ffmpeg", "-hide_banner", "-nostats"] + (["-ss", f"{ss:.2f}", "-t", f"{t:.2f}"] if ss is not None else []) + ["-i", path, "-vn", "-af", "ebur128", "-f", "null", "-"]
@@ -57,7 +57,7 @@ for s in B.SCENES:
     for i, x in enumerate(tr):   # subtitle text from the script when the line count matches, else what was actually said
         text = (s["lines"][i][1] if len(tr) == len(s["lines"]) else x["text"]).replace("...", "…")   # spoken words only, no speaker names
         caps.append(dict(text=text, t0=t + x["start"], t1=t + min(x["end"] + 0.3, end)))
-    if s.get("chyron"): shots.append(dict(tag=s["chyron"], t0=t, t1=t + min(end, 4.0)))
+    if s.get("chyron"): shots.append(dict(tag=s["chyron"], t0=t, t1=t + (end if s.get("hold") else min(end, 4.0))))
     punch = t + (max(x["end"] for x in tr) if tr else end) + 0.1
     for k in (s.get("sfx") or "").split("+"):
         if k == "whoosh": cues.append(("whoosh", max(0, t - 0.4), 0.45))

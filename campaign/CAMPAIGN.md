@@ -223,3 +223,10 @@ Helpline: the closing voice-over and the end card give the pollution helpline, *
 Latest changes: the lead has a refined, cleaner look (reference in `brand/lead-portrait.png`, new cast sheet), the students wear masks in all distribution scenes, a new scene has them give Ramlal a mask ("अंकल, आप भी मास्क पहन लीजिए। Air purifier तो घर में पड़ा है!"), the helpline number is spoken digit by digit in English, and the Jantar Mantar line is re-spoken whole in the lead's cloned voice with correct pronunciation, stretched once to the shot's timing.
 
 Full regeneration: every shot is now generated with MiniMax Hailuo 3 at 2K (Gemini Omni 1.2 was still down: 0% uptime, repeated failures), from one cast sheet (no chin mask on Bunty) and one CM-office reference. Lip-sync comes from the generated clips; the lead and CM voices are converted on top with the original timing.
+
+## 3d. Awareness film — "लाल बत्ती पर चार काम" (1 min 23 sec)
+
+File: `campaign/red-light-guidelines.mp4` · script: `campaign/beats_redlight.py` (build with `SKIT=beats_redlight` on the same scripts).
+At the red light in front of the BJP headquarters the students hand out masks and give drivers four things every citizen can do:
+1. switch the engine off at the red light, 2. use metro, bus or carpool, 3. get the PUC check and service done on time,
+4. never burn waste or leaves, and wear a mask outdoors. It ends on the helpline call to action (8875833833).

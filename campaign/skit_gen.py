@@ -3,7 +3,7 @@ import os, sys, io, json, time, base64, subprocess, requests
 from concurrent.futures import ThreadPoolExecutor
 from PIL import Image
 from imgedit import edit
-import beats_skit as B
+B = __import__("importlib").import_module(os.environ.get("SKIT", "beats_skit"))
 D = sys.argv[1]; API = "https://openrouter.ai/api/v1"; H = {"Authorization": "Bearer " + os.environ["OPENROUTER_API_KEY"]}
 os.environ.setdefault("IMG_MODEL", "google/gemini-3-pro-image")
 

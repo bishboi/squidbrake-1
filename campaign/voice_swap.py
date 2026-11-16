@@ -4,7 +4,7 @@ each line its true start/end -> tr_<scene>.json (used for subtitles and trims). 
 never overlaps a neighbouring word, and saved as vs_<scene>_<line>.mp3/.json (spliced in by skit.py).
 Usage: python3 voice_swap.py <clips_dir> <lead_voice_id>      (key is injected by the network proxy)"""
 import os, sys, json, re, unicodedata, subprocess, difflib, requests
-import beats_skit as B
+B = __import__("importlib").import_module(os.environ.get("SKIT", "beats_skit"))
 D, LEAD_VOICE = sys.argv[1], sys.argv[2]; CM_VOICE = os.environ.get("CM_VOICE", "ThT5KcBeYPX3keUQqHPh"); CM_PITCH = float(os.environ.get("CM_PITCH", "-0.5"))   # a deeper, warmer female voice for the invented Chief Minister
 VOICES = {"कबीर": LEAD_VOICE, "मुख्यमंत्री": CM_VOICE}; H = {"xi-api-key": os.environ.get("ELEVENLABS_API_KEY", "proxy-injected")}
 dur = lambda p: float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", p], capture_output=True, text=True).stdout)
