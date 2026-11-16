@@ -9,6 +9,15 @@ import beats_skit as B
 def lufs(path, ss=None, t=None):
     cmd = ["ffmpeg", "-hide_banner", "-nostats"] + (["-ss", f"{ss:.2f}", "-t", f"{t:.2f}"] if ss is not None else []) + ["-i", path, "-vn", "-af", "ebur128", "-f", "null", "-"]
     m = __import__("re").findall(r"I:\s+(-?[\d.]+) LUFS", subprocess.run(cmd, capture_output=True, text=True).stderr); return float(m[-1]) if m else -30.0
+def iso_audio(sid):
+    """the scene's own audio with street noise, hiss and stray laughter removed (ElevenLabs voice isolator); falls back to the raw clip audio"""
+    out = f"{D}/iso_{sid}.wav"
+    if os.path.exists(out): return out
+    raw = f"{D}/_raw_{sid}.wav"; run("-i", f"{D}/clip_{sid}.mp4", "-vn", "-ac", "1", "-ar", "44100", raw)
+    import requests
+    r = requests.post("https://api.elevenlabs.io/v1/audio-isolation", headers={"xi-api-key": os.environ.get("ELEVENLABS_API_KEY", "proxy-injected")}, timeout=300, files={"audio": open(raw, "rb")})
+    if r.status_code != 200: print("isolation failed for", sid, r.status_code, flush=True); return f"{D}/clip_{sid}.mp4"
+    open(f"{D}/_iso_{sid}.mp3", "wb").write(r.content); run("-i", f"{D}/_iso_{sid}.mp3", "-ac", "1", "-ar", "44100", out); return out
 TMP = R.TMP; os.makedirs(TMP, exist_ok=True); run, probe = R.run, R.probe
 OUTRO = json.load(open(f"{D}/outro.json")) if os.path.exists(f"{D}/outro.json") else None
 TAIL = (0.8 + OUTRO["speech"][1] + 2.2) if OUTRO else 5.5; INTRO = 3.4; XFD = 0.3; t = INTRO - XFD; caps = []; shots = []; segs = []; cues = []; hope_at = None
@@ -19,6 +28,7 @@ for s in B.SCENES:
     if tr and s["lines"] and nxt: end = min(end, max(max(x["end"] for x in tr) + 0.12, nxt - 0.04))   # never cut into an unscripted word
     if s.get("cut"): end = min(end, s["cut"])
     if s.get("tight") and tr: end = min(end, max(x["end"] for x in tr) + 0.5)   # stop right after the last scripted line (clip may run on)
+    aud = iso_audio(s["id"]) if not s.get("silent") else clip
     last = s is B.SCENES[-1]; seg = f"{TMP}/sk_{s['id']}.mp4"
     run("-i", clip, "-t", f"{end:.2f}", "-vf", f"scale={R.W}:{R.H}:flags=lanczos,fps={R.FPS},setsar=1" + (f",tpad=stop_mode=clone:stop_duration={TAIL}" if (last and not OUTRO) else "") + ",format=yuv420p",
         "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "14", seg)
@@ -27,7 +37,8 @@ for s in B.SCENES:
     if swaps:
         # 1) normalise the scene with the re-voiced lines muted, 2) lay the converted lines on top at an exact level relative to the other voices
         gate = "+".join([f"between(t,{w['start']:.2f},{w['end']:.2f})" for w, _ in swaps] + [f"between(t,{a:.2f},{b:.2f})" for a, b in s.get("mute", [])]); bg = f"{TMP}/sk_{s['id']}_bg.wav"
-        run("-i", clip, "-t", f"{end:.2f}", "-vn", "-af", f"volume=enable='{gate}':volume=0,{tail}", "-ac", "2", bg)
+        g0 = lufs(aud, 0.0, end); gain0 = max(-12.0, min(14.0, -15.0 - g0))   # level set from the ORIGINAL scene, so the ambience left after muting the lead line is not boosted
+        run("-i", aud, "-t", f"{end:.2f}", "-vn", "-af", f"volume=enable='{gate}':volume=0,volume={gain0:.1f}dB,aresample=48000,afade=t=in:d=0.12,afade=t=out:st={end - XFD:.2f}:d={XFD}", "-ac", "2", bg)
         ins = []; fl = []; outs = []
         for j, (w, mp3) in enumerate(swaps):
             who = s["lines"][int(mp3.rsplit("_", 1)[1][:-4])][0]
@@ -38,7 +49,7 @@ for s in B.SCENES:
         fl.append("[0:a]" + "".join(outs) + f"amix=inputs={len(swaps) + 1}:normalize=0:duration=first,alimiter=limit=0.97:level=0[o]")
         run("-i", bg, *ins, "-filter_complex", ";".join(fl), "-map", "[o]", "-ac", "2", f"{TMP}/sk_{s['id']}.wav")
     else:
-        run("-i", clip, "-t", f"{end:.2f}", "-vn", "-af", ("volume=0.12," if s.get("silent") else "") + tail, "-ac", "2", f"{TMP}/sk_{s['id']}.wav")
+        run("-i", aud, "-t", f"{end:.2f}", "-vn", "-af", ("volume=0.12," if s.get("silent") else "") + tail, "-ac", "2", f"{TMP}/sk_{s['id']}.wav")
     names = [n for n, _ in s["lines"]]
     for i, x in enumerate(tr):   # subtitle text from the script when the line count matches, else what was actually said
         text = (f"{names[i]} :  {s['lines'][i][1]}" if len(tr) == len(s["lines"]) else x["text"]).replace("...", "…")
@@ -46,9 +57,9 @@ for s in B.SCENES:
     if s.get("chyron"): shots.append(dict(tag=s["chyron"], t0=t, t1=t + min(end, 4.0)))
     punch = t + (max(x["end"] for x in tr) if tr else end) + 0.1
     for k in (s.get("sfx") or "").split("+"):
-        if k == "whoosh": cues.append(("whoosh", max(0, t - 0.4), 0.9))
-        elif k == "boom": cues.append(("boom", punch, 1.0))
-        elif k == "scratch": cues.append(("scratch", punch - 0.1, 0.8))
+        if k == "whoosh": cues.append(("whoosh", max(0, t - 0.4), 0.45))
+        elif k == "boom": cues.append(("boom", punch, 0.42))
+        elif k == "scratch": cues.append(("scratch", punch - 0.1, 0.4))
         elif k == "laugh": cues.append(("laugh", punch + (0.35 if "boom" in s["sfx"] else 0.1), 0.75))
     if s.get("music") == "hope": hope_at = t
     segs.append((s["id"], t, end)); t += end - (0 if (last and not OUTRO) else XFD)

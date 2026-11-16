@@ -66,6 +66,9 @@ for s in B.SCENES:
         t0 = max(words[a]["start"] - 0.12, (words[a - 1]["end"] + 0.02) if a > 0 else 0.0)
         t1 = min(words[b]["end"] + 0.45, (words[b + 1]["start"] - 0.03) if b + 1 < len(words) else total)
         wav = f"{D}/_seg.wav"; subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", f"{D}/clip_{sid}.mp4", "-ss", f"{t0:.2f}", "-t", f"{t1 - t0:.2f}", "-vn", "-ac", "1", "-ar", "44100", wav], check=True)
+        iso = requests.post("https://api.elevenlabs.io/v1/audio-isolation", headers=H, timeout=300, files={"audio": open(wav, "rb")})   # strip street noise / ambience from the source first
+        if iso.status_code == 200:
+            open(f"{D}/_iso.mp3", "wb").write(iso.content); subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", f"{D}/_iso.mp3", "-ac", "1", "-ar", "44100", wav], check=True)
         r = requests.post(f"https://api.elevenlabs.io/v1/speech-to-speech/{VOICES[who]}?output_format=mp3_44100_128", headers=H, timeout=300, files={"audio": open(wav, "rb")},
             data={"model_id": "eleven_multilingual_sts_v2", "remove_background_noise": "true", "voice_settings": json.dumps({"stability": 0.5, "similarity_boost": 0.85, "style": 0.0, "use_speaker_boost": True})})
         if r.status_code != 200: sys.exit(f"{sid}[{i}] {r.status_code} {r.text[:300]}")
