@@ -6,6 +6,9 @@ D, SFX, OUT = sys.argv[1:4]
 os.environ["FILM"] = "beats_skit"; sys.argv = [sys.argv[0], D, "-", OUT]
 import render as R                      # text, overlay and compositing helpers
 import beats_skit as B
+def lufs(path, ss=None, t=None):
+    cmd = ["ffmpeg", "-hide_banner", "-nostats"] + (["-ss", f"{ss:.2f}", "-t", f"{t:.2f}"] if ss is not None else []) + ["-i", path, "-vn", "-af", "ebur128", "-f", "null", "-"]
+    m = __import__("re").findall(r"I:\s+(-?[\d.]+) LUFS", subprocess.run(cmd, capture_output=True, text=True).stderr); return float(m[-1]) if m else -30.0
 TMP = R.TMP; os.makedirs(TMP, exist_ok=True); run, probe = R.run, R.probe
 TAIL = 5.5; INTRO = 3.4; t = INTRO; caps = []; shots = []; segs = []; cues = []; hope_at = None
 for s in B.SCENES:
@@ -18,10 +21,18 @@ for s in B.SCENES:
     swaps = [(json.load(open(p)), p[:-5] + ".mp3") for p in sorted(__import__("glob").glob(f"{D}/vs_{s['id']}_*.json"))]   # lead lines re-voiced by voice_swap.py
     tail = "loudnorm=I=-15:TP=-1.5:LRA=11,aresample=48000,afade=t=in:d=0.05,afade=t=out:st=%.2f:d=0.15" % (end - 0.15)
     if swaps:
-        gate = "+".join(f"between(t,{w['start']:.2f},{w['end']:.2f})" for w, _ in swaps); fl = [f"[0:a]volume=enable='{gate}':volume=0[bg]"]; ins = []
-        for j, (w, mp3) in enumerate(swaps): ins += ["-i", mp3]; fl.append(f"[{j + 1}:a]aresample=44100,aformat=channel_layouts=mono,adelay={int(w['start'] * 1000)}:all=1[v{j}]")
-        fl.append("[bg]" + "".join(f"[v{j}]" for j in range(len(swaps))) + f"amix=inputs={len(swaps) + 1}:normalize=0,{tail}[o]")
-        run("-i", clip, *ins, "-t", f"{end:.2f}", "-filter_complex", ";".join(fl), "-map", "[o]", "-ac", "2", f"{TMP}/sk_{s['id']}.wav")
+        # 1) normalise the scene with the re-voiced lines muted, 2) lay the converted lines on top at an exact level relative to the other voices
+        gate = "+".join(f"between(t,{w['start']:.2f},{w['end']:.2f})" for w, _ in swaps); bg = f"{TMP}/sk_{s['id']}_bg.wav"
+        run("-i", clip, "-t", f"{end:.2f}", "-vn", "-af", f"volume=enable='{gate}':volume=0,{tail}", "-ac", "2", bg)
+        groups = [g for g, _ in __import__("itertools").groupby(x[0] for x in s["lines"])]; ins = []; fl = []; outs = []
+        for j, (w, mp3) in enumerate(swaps):
+            who = groups[int(mp3.rsplit("_", 1)[1][:-4])]
+            oth = [lufs(bg, x["start"], x["end"] - x["start"]) for (n, _), x in zip(s["lines"], tr) if n != who and x["end"] - x["start"] > 0.8] if tr else []
+            ref = (max(oth) + 5.0) if oth else (-12.0 if who == "कबीर" else -14.0)    # lead: 5 dB above the loudest other voice in the scene
+            gain = max(-6.0, min(20.0, ref - lufs(mp3))); ins += ["-i", mp3]
+            fl.append(f"[{j + 1}:a]aresample=48000,aformat=channel_layouts=stereo,volume={gain:.1f}dB,adelay={int(w['start'] * 1000)}:all=1[v{j}]"); outs.append(f"[v{j}]")
+        fl.append("[0:a]" + "".join(outs) + f"amix=inputs={len(swaps) + 1}:normalize=0:duration=first,alimiter=limit=0.97:level=0[o]")
+        run("-i", bg, *ins, "-filter_complex", ";".join(fl), "-map", "[o]", "-ac", "2", f"{TMP}/sk_{s['id']}.wav")
     else:
         run("-i", clip, "-t", f"{end:.2f}", "-vn", "-af", tail, "-ac", "2", f"{TMP}/sk_{s['id']}.wav")
     names = [n for n, _ in s["lines"]]
@@ -59,7 +70,7 @@ fl.append(f"[c][h]amix=inputs=2:normalize=0,apad=whole_dur={total:.2f}[mus];[mus
 fx = []
 for k, at, vol in cues:
     ins += ["-i", f"{SFX}/{k}.wav"]; fl.append(f"[{n}:a]aresample=48000,aformat=channel_layouts=stereo,volume={vol},adelay={int(at * 1000)}:all=1[x{n}]"); fx.append(f"[x{n}]"); n += 1
-fl.append("[dia][md]" + "".join(fx) + f"amix=inputs={2 + len(fx)}:normalize=0,alimiter=limit=0.89,atrim=0:{total:.2f}[a]")
+fl.append("[dia][md]" + "".join(fx) + f"amix=inputs={2 + len(fx)}:normalize=0,alimiter=limit=0.89:level=0,atrim=0:{total:.2f}[a]")
 run(*ins, "-filter_complex", ";".join(fl), "-map", "[a]", "-c:a", "aac", "-b:a", "192k", f"{TMP}/sk_audio.m4a")
 run("-i", f"{TMP}/sk_video.mp4", "-i", f"{TMP}/sk_audio.m4a", "-c", "copy", "-movflags", "+faststart", "-shortest", OUT)
 print(f"wrote {OUT}  {total:.1f}s", [(k, round(a, 1)) for k, a, _ in cues])

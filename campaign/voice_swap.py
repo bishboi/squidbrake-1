@@ -5,7 +5,8 @@ Step 2 (convert): each of the lead's turns is converted to the target voice -> v
 Usage: python3 voice_swap.py <clips_dir> <voice_id>   (key is injected by the network proxy; STUB=1 skips the conversion)"""
 import os, sys, json, subprocess, requests
 import beats_skit as B
-D, VOICE = sys.argv[1], sys.argv[2]; LEAD = "कबीर"; KEY = os.environ.get("ELEVENLABS_API_KEY", "proxy-injected"); H = {"xi-api-key": KEY}
+D, VOICE = sys.argv[1], sys.argv[2]; CM_VOICE = os.environ.get("CM_VOICE", "XrExE9yKIg1WjnnlVkGX")   # stock female voice for the invented CM
+VOICES = {"कबीर": VOICE, "मुख्यमंत्री": CM_VOICE}; KEY = os.environ.get("ELEVENLABS_API_KEY", "proxy-injected"); H = {"xi-api-key": KEY}
 dur = lambda p: float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", p], capture_output=True, text=True).stdout)
 
 def scribe(sid):
@@ -51,12 +52,12 @@ for s in B.SCENES:
     json.dump(tr, open(f"{D}/tr_{sid}.json", "w"), ensure_ascii=False)
     for k, (g, t) in enumerate(zip(groups, T)):
         out = f"{D}/vs_{sid}_{k}.mp3"
-        if g["who"] != LEAD or os.path.exists(out): continue
+        if g["who"] not in VOICES or os.path.exists(out): continue
         a = max(t["start"] - 0.12, (T[k - 1]["end"] + 0.03) if k else 0.0); b = min(t["end"] + 0.30, (T[k + 1]["start"] - 0.03) if k + 1 < len(T) else total)
         wav = f"{D}/_seg.wav"; subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", f"{D}/clip_{sid}.mp4", "-ss", f"{a:.2f}", "-t", f"{b - a:.2f}", "-vn", "-ac", "1", "-ar", "44100", wav], check=True)
         if os.environ.get("STUB"): subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", wav, out], check=True)
         else:
-            r = requests.post(f"https://api.elevenlabs.io/v1/speech-to-speech/{VOICE}?output_format=mp3_44100_128", headers=H, timeout=300, files={"audio": open(wav, "rb")},
+            r = requests.post(f"https://api.elevenlabs.io/v1/speech-to-speech/{VOICES[g['who']]}?output_format=mp3_44100_128", headers=H, timeout=300, files={"audio": open(wav, "rb")},
                 data={"model_id": "eleven_multilingual_sts_v2", "remove_background_noise": "true",
                       "voice_settings": json.dumps({"stability": 0.5, "similarity_boost": 0.85, "style": 0.0, "use_speaker_boost": True})})
             if r.status_code != 200: sys.exit(f"{sid}[{k}] {r.status_code} {r.text[:300]}")

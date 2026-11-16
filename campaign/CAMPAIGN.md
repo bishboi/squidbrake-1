@@ -97,7 +97,9 @@ person or photo. The film opens on a card saying it is fictional satire with AI-
 (leaving Delhi before Diwali on a doctor's advice, the Switzerland trip, the AC line) checked by your legal team
 before release, and follow the Election Commission's rules on labelling synthetic content.
 The lead's lines are re-voiced into the lead's own cloned ElevenLabs voice (his consent, his account) with `voice_swap.py`, which keeps
-the generated lip-sync; every other character keeps a generated voice.
+the generated lip-sync, and the Chief Minister's lines are converted into a separate stock female voice; every other character keeps a
+generated voice. The lead's converted lines are mixed 5 dB above the loudest other voice in each scene. Each CM line is its own shot,
+so only the person speaking ever has moving lips.
 Build: `python3 skit_gen.py <dir>` (stills, dialogue clips), `python3 voice_swap.py <dir> <voice_id>` (true line timings via ElevenLabs
 Scribe, then speech-to-speech on the lead's turns), then `python3 skit.py <dir> <sfx_dir> pollution-ka-solution-skit.mp4`.
 
