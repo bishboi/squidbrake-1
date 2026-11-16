@@ -99,3 +99,52 @@ fl.append("[dia][md]" + "".join(fx) + f"amix=inputs={2 + len(fx)}:normalize=0,al
 run(*ins, "-filter_complex", ";".join(fl), "-map", "[a]", "-c:a", "aac", "-b:a", "192k", f"{TMP}/sk_audio.m4a")
 run("-i", f"{TMP}/sk_video.mp4", "-i", f"{TMP}/sk_audio.m4a", "-c", "copy", "-movflags", "+faststart", "-shortest", OUT)
 print(f"wrote {OUT}  {total:.1f}s", [(k, round(a, 1)) for k, a, _ in cues])
+
+# ---- optional 9:16 version (PORTRAIT=<out.mp4>): same footage and audio, relaid for phones; no shots are regenerated ----
+if os.environ.get("PORTRAIT"):
+    from PIL import ImageDraw
+    PW, PH, VY, VH = 1080, 1920, 520, 608; OFF = INTRO   # the intro card is dropped
+    R.static_overlay = lambda: Image.new("RGBA", (R.W, R.H), (0, 0, 0, 0))   # no letterbox bars / corner tag inside the picture
+    nocap = f"{TMP}/sk_nocap.mp4"; R.composite(f"{TMP}/sk_base.mp4", nocap, [], [x for x in titles if x.get("layer") is not box], total)
+    plate = Image.new("RGBA", (PW, PH), (0, 0, 0, 0)); d = ImageDraw.Draw(plate); NAVY = (11, 38, 102, 235)
+    em = Image.open(f"{R.HERE}/brand/nsui-emblem.png").convert("RGB").resize((170, 170), Image.LANCZOS); m = Image.new("L", (170, 170), 0); ImageDraw.Draw(m).ellipse([1, 1, 168, 168], fill=255); plate.paste(em, (70, 250), m)
+    f1 = R.F(R.BIG, 66); f2 = R.F(R.CAP, 40); x0 = 270
+    R.mtext(d, x0 + R.mlen(d, "Pollution पर Solution", f1) / 2, 252, "Pollution पर Solution", f1, R.WHITE); d.rounded_rectangle([x0, 348, x0 + 420, 356], 4, fill=R.SAFFRON)
+    R.mtext(d, x0 + R.mlen(d, "दिल्ली को साँस लेने दो  |  NSUI", f2) / 2, 368, "दिल्ली को साँस लेने दो  |  NSUI", f2, (255, 255, 255, 235))
+    f3 = R.F(R.CAP, 24); R.mtext(d, PW - 60 - R.mlen(d, "काल्पनिक व्यंग्य  |  AI-निर्मित", f3) / 2, VY + VH + 10, "काल्पनिक व्यंग्य  |  AI-निर्मित", f3, (255, 255, 255, 150))
+    d.rounded_rectangle([70, 1430, PW - 70, 1570], 26, fill=NAVY); d.rounded_rectangle([70, 1430, 86, 1570], 8, fill=R.SAFFRON)
+    R.mtext(d, PW // 2 + 8, 1436, "पॉल्यूशन हेल्पलाइन  :  मिस्ड कॉल दें  |  WhatsApp करें", R.F(R.CAP, 32), (255, 255, 255, 235)); R.mtext(d, PW // 2 + 8, 1476, "8875833833", R.F(R.BIG, 70), R.WHITE)
+    plate.save(f"{TMP}/pt_plate.png")
+    def cap_layer(text):
+        f = R.F(R.CAP, 54); ls = R.wrap(text, f, 940); L = Image.new("RGBA", (PW, PH), (0, 0, 0, 0)); dd = ImageDraw.Draw(L); h = 78 * len(ls); y = 1180 + max(0, (228 - h) // 2)
+        dd.rounded_rectangle([50, y - 14, PW - 50, y + h + 14], 22, fill=(0, 0, 0, 150))
+        for i, l in enumerate(ls): R.mtext(dd, PW // 2, y + 78 * i, l, f, R.WHITE)
+        return L
+    def tag_layer(text):
+        f = R.F(R.BIG, 38); L = Image.new("RGBA", (PW, PH), (0, 0, 0, 0)); dd = ImageDraw.Draw(L); w = int(R.mlen(dd, text, f)) + 44
+        dd.rounded_rectangle([60, VY - 68, 60 + w, VY - 10], 10, fill=(0, 0, 0, 170)); dd.rectangle([60, VY - 68, 68, VY - 10], fill=R.SAFFRON); R.mtext(dd, 60 + w // 2 + 4, VY - 64, text, f, R.WHITE); return L
+    capl = {}; tagl = {}; n = int((total - OFF) * R.FPS)
+    dec = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-ss", f"{OFF}", "-i", nocap, "-i", f"{TMP}/pt_plate.png", "-filter_complex",
+        f"[0:v]split[a][b];[a]scale=270:480:force_original_aspect_ratio=increase,crop=270:480,gblur=sigma=9,eq=brightness=-0.22:saturation=0.8,scale={PW}:{PH}[bg];[b]scale={PW}:{VH}:flags=lanczos[fg];[bg][fg]overlay=0:{VY}[v];[v][1:v]overlay=0:0,format=rgb24[o]",
+        "-map", "[o]", "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], stdout=subprocess.PIPE)
+    enc = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{PW}x{PH}", "-r", str(R.FPS), "-i", "-", "-ss", f"{OFF}", "-i", f"{TMP}/sk_audio.m4a",
+        "-c:v", "libx264", "-preset", "medium", "-crf", "21", "-maxrate", "6M", "-bufsize", "12M", "-pix_fmt", "yuv420p", "-af", "afade=t=in:d=0.3", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", "-shortest", os.environ["PORTRAIT"]], stdin=subprocess.PIPE)
+    last = None
+    for fi in range(n):
+        raw = dec.stdout.read(PW * PH * 3)
+        if len(raw) < PW * PH * 3: raw = last
+        last = raw; tt = fi / R.FPS + OFF; fr = Image.frombuffer("RGB", (PW, PH), raw).copy()
+        for s_ in shots:
+            a = R.fade(tt, s_["t0"] + 0.15, s_["t1"] - 0.15, 0.3, 0.3)
+            if a > 0:
+                if s_["tag"] not in tagl: tagl[s_["tag"]] = tag_layer(s_["tag"])
+                R.paste(fr, tagl[s_["tag"]], a)
+        for i, c in enumerate(caps):
+            a = R.fade(tt, c["t0"] - 0.1, c["t1"] + 0.1, 0.2, 0.2)
+            if a > 0:
+                if i not in capl: capl[i] = cap_layer(c["text"])
+                R.paste(fr, capl[i], a)
+        g = min(1.0, (total - tt) / 1.0)
+        if g < 1: fr = Image.blend(Image.new("RGB", (PW, PH)), fr, max(0, g))
+        enc.stdin.write(fr.tobytes())
+    dec.kill(); enc.stdin.close(); enc.wait(); print("wrote", os.environ["PORTRAIT"])
