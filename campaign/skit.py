@@ -15,6 +15,7 @@ for s in B.SCENES:
     clip = f"{D}/clip_{s['id']}.mp4"; tr = json.load(open(f"{D}/tr_{s['id']}.json")) if os.path.exists(f"{D}/tr_{s['id']}.json") else []
     d = float(probe(clip, "format=duration")); end = min(d - 0.05, max(x["end"] for x in tr) + 1.7) if tr and s["lines"] else d - 0.05
     if s.get("cut"): end = min(end, s["cut"])
+    if s.get("tight") and tr: end = min(end, max(x["end"] for x in tr) + 0.4)   # stop right after the last scripted line (clip may run on)
     last = s is B.SCENES[-1]; seg = f"{TMP}/sk_{s['id']}.mp4"
     run("-i", clip, "-t", f"{end:.2f}", "-vf", f"scale={R.W}:{R.H}:flags=lanczos,fps={R.FPS},setsar=1" + (f",tpad=stop_mode=clone:stop_duration={TAIL}" if last else "") + ",format=yuv420p",
         "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "14", seg)
@@ -22,7 +23,7 @@ for s in B.SCENES:
     tail = "loudnorm=I=-15:TP=-1.5:LRA=11,aresample=48000,afade=t=in:d=0.05,afade=t=out:st=%.2f:d=0.15" % (end - 0.15)
     if swaps:
         # 1) normalise the scene with the re-voiced lines muted, 2) lay the converted lines on top at an exact level relative to the other voices
-        gate = "+".join(f"between(t,{w['start']:.2f},{w['end']:.2f})" for w, _ in swaps); bg = f"{TMP}/sk_{s['id']}_bg.wav"
+        gate = "+".join([f"between(t,{w['start']:.2f},{w['end']:.2f})" for w, _ in swaps] + [f"between(t,{a:.2f},{b:.2f})" for a, b in s.get("mute", [])]); bg = f"{TMP}/sk_{s['id']}_bg.wav"
         run("-i", clip, "-t", f"{end:.2f}", "-vn", "-af", f"volume=enable='{gate}':volume=0,{tail}", "-ac", "2", bg)
         groups = [g for g, _ in __import__("itertools").groupby(x[0] for x in s["lines"])]; ins = []; fl = []; outs = []
         for j, (w, mp3) in enumerate(swaps):
