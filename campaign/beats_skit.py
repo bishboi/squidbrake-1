@@ -66,7 +66,7 @@ SCENES = [
   lines=[("बंटी", "Temperature?!"), ("मीरा", "मैडम... AQI हवा की quality होती है।")], tight=True),
  dict(id="cm2b", dur=6, refs=[], sfx="boom+laugh", tight=True,
   still="(first frame = the last frame of the preceding shot)",
-  action="Same shot of the chief minister's office, the camera locked off. The three students sit silently, mouths closed, not speaking at all in this clip. Only the CM speaks: smiling brightly and proudly, she picks up the air-conditioner remote, presses it and says cheerfully, saying the word \"अच्छा?\" only once, then: \"तो... AC चला लो!\" Only the CM's lips move.",
+  action="Same shot of the chief minister's office, the camera locked off. The three students sit silently, mouths closed, not speaking at all in this clip. Only the CM speaks: smiling brightly and proudly, she picks up the air-conditioner remote, presses it and says cheerfully, saying the word \"अच्छा?\" only once, then: \"तो... AC चला लो!\" She speaks loudly and clearly, in one go without a long pause between the two phrases. Only the CM's lips move.",
   lines=[("मुख्यमंत्री", "अच्छा? तो... AC चला लो!")]),
  dict(id="pm1", dur=13, refs=["cast"], sfx="boom+laugh",
   still="On the wide stone steps outside a grand government secretariat building in smoggy evening light, medium shot from the front: the three students stand in a row facing the camera — BUNTY on the left with one finger raised as if he has a bright idea, KABIR in the centre, calm and tall, MEERA on the right with round black-framed glasses ON her face and arms folded. Exactly three people, their faces and T-shirt fronts clearly visible.",

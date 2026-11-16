@@ -103,7 +103,7 @@ def retime_line(path, voice, text):
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", f"{head:.3f}", "-t", f"{e2_ - head + 0.15:.3f}", "-i", tts, "-af", f"atempo={ratio:.4f},adelay={int(lead * 1000)}:all=1,aresample=44100", "-b:a", "128k", tmp], check=True)
     def lu(p):
         m = re.findall(r"I:\s+(-?[\d.]+) LUFS", subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-i", p, "-af", "ebur128", "-f", "null", "-"], capture_output=True, text=True).stderr); return float(m[-1]) if m else -23.0
-    g = max(-10.0, min(10.0, lu(path) - lu(tmp))); out2 = path + ".rt2.mp3"
+    g = max(-24.0, min(10.0, lu(path) - lu(tmp))); out2 = path + ".rt2.mp3"
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", tmp, "-af", f"volume={g:.1f}dB", "-b:a", "128k", out2], check=True); os.replace(out2, path); os.remove(tmp)
     print(f"retimed whole line: tempo x{ratio:.2f}, {g:.1f} dB", flush=True); return True
 

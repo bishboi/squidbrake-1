@@ -73,7 +73,7 @@ It is clearly labelled as fiction on screen ("काल्पनिक भवि
 sourcing. Best used as the second release, a week after the first film, and as the opener at campus screenings.
 Build: `FILM=beats2126 python3 gen_assets.py <dir> vo stills videos`, then `FILM=beats2126 python3 render.py <dir> <music.mp3> delhi-2126.mp4`.
 
-## 3c. Comedy skit — "Pollution का Solution — एक खोज" (3 min 8 sec)
+## 3c. Comedy skit — "Pollution का Solution — एक खोज" (3 min 21 sec)
 
 File: `campaign/pollution-ka-solution-skit.mp4` · script: `campaign/beats_skit.py` · cast and T-shirt references: `campaign/brand/`
 
@@ -221,3 +221,5 @@ Two shots (the auto-rickshaw exchange and the Jantar Mantar / "फिर से 
 Helpline: the closing voice-over and the end card give the pollution helpline, **8875833833** — send support or queries by missed call or WhatsApp. The number is spoken digit by digit in the lead's voice, shown in a large block with both options, and held on screen to the end (set in `outro_vo.py` and `outro_visuals.py`).
 
 Latest changes: the lead has a refined, cleaner look (reference in `brand/lead-portrait.png`, new cast sheet), the students wear masks in all distribution scenes, a new scene has them give Ramlal a mask ("अंकल, आप भी मास्क पहन लीजिए। Air purifier तो घर में पड़ा है!"), the helpline number is spoken digit by digit in English, and the Jantar Mantar line is re-spoken whole in the lead's cloned voice with correct pronunciation, stretched once to the shot's timing.
+
+Full regeneration: every shot is now generated with MiniMax Hailuo 3 at 2K (Gemini Omni 1.2 was still down: 0% uptime, repeated failures), from one cast sheet (no chin mask on Bunty) and one CM-office reference. Lip-sync comes from the generated clips; the lead and CM voices are converted on top with the original timing.
