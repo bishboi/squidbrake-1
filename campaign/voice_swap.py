@@ -41,6 +41,19 @@ def align(lines, words):
         else: j -= 1
     return hit
 
+def clean(path, t0):
+    """trim the converted line to its words (+ a short tail) and turn down breaths / stray sounds in the pauses; returns the new start time"""
+    r = requests.post("https://api.elevenlabs.io/v1/speech-to-text", headers=H, timeout=200, files={"file": open(path, "rb")}, data={"model_id": "scribe_v1", "timestamps_granularity": "word", "language_code": "hin"})
+    if r.status_code != 200: return t0
+    w = [x for x in r.json().get("words", []) if x.get("type") == "word" and norm(x["text"])]
+    if not w: return t0
+    head = max(0.0, w[0]["start"] - 0.06); stop = w[-1]["end"] + 0.14; af = []
+    for a, b in zip(w, w[1:]):
+        if b["start"] - a["end"] > 0.28: af.append(f"volume=enable='between(t,{a['end'] + 0.07 - head:.2f},{b['start'] - 0.07 - head:.2f})':volume=0.06")
+    af += ["afade=t=in:d=0.02", f"afade=t=out:st={max(0.0, stop - head - 0.1):.2f}:d=0.1"]
+    tmp = path + ".tmp.mp3"; subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", f"{head:.2f}", "-t", f"{stop - head:.2f}", "-i", path, "-af", ",".join(af), "-b:a", "128k", tmp], check=True)
+    os.replace(tmp, path); return t0 + head
+
 for s in B.SCENES:
     if not s["lines"]: continue
     sid = s["id"]; words = scribe(sid); hit = align(s["lines"], words); total = dur(f"{D}/clip_{sid}.mp4"); tr = []
@@ -56,7 +69,7 @@ for s in B.SCENES:
         r = requests.post(f"https://api.elevenlabs.io/v1/speech-to-speech/{VOICES[who]}?output_format=mp3_44100_128", headers=H, timeout=300, files={"audio": open(wav, "rb")},
             data={"model_id": "eleven_multilingual_sts_v2", "remove_background_noise": "true", "voice_settings": json.dumps({"stability": 0.5, "similarity_boost": 0.85, "style": 0.0, "use_speaker_boost": True})})
         if r.status_code != 200: sys.exit(f"{sid}[{i}] {r.status_code} {r.text[:300]}")
-        open(out, "wb").write(r.content); json.dump({"start": t0, "end": t1}, open(f"{D}/vs_{sid}_{i}.json", "w")); print("swapped", sid, i, who, f"{t0:.1f}-{t1:.1f}", flush=True)
+        open(out, "wb").write(r.content); t0 = clean(out, t0); json.dump({"start": t0, "end": t1}, open(f"{D}/vs_{sid}_{i}.json", "w")); print("swapped", sid, i, who, f"{t0:.1f}-{t1:.1f}", flush=True)
     json.dump(tr, open(f"{D}/tr_{sid}.json", "w"), ensure_ascii=False)
     lastb = max((hit[i][1] for i in hit), default=None)   # first word after the last scripted line = start of any ad-lib; the scene is cut before it
     json.dump({"next_start": (words[lastb + 1]["start"] if lastb is not None and lastb + 1 < len(words) else None)}, open(f"{D}/nxt_{sid}.json", "w"))

@@ -209,3 +209,5 @@ film completion rate, and — the only one that finally matters — a written, d
   replace the generated score if you need a licensed track for broadcast, and add the official NSUI logo on the end card.
 
 The film now ends on a short call to action in the lead's own cloned voice (`outro_vo.py`): "हमारे साथ जुड़िए, अपने मोहल्ले में लोगों को मास्क बाँटिए, उन्हें जागरूक कीजिए… Pollution पर Solution, NSUI के साथ आइए।"
+
+The outro is built by `outro_visuals.py`: three shots from the film behind the call to action, the NSUI emblem, keyword chips ("जुड़िए", "मास्क बाँटिए", "जागरूक कीजिए") that appear exactly when the lead says them, both campaign posters and a final logo lockup. The voice-over uses ElevenLabs v3, which won a blind ranking against v2 variants.

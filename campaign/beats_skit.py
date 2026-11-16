@@ -89,6 +89,6 @@ SCENES = [
   lines=[("बंटी", "भाई... इनको मास्क कैसे पहनाऊँ?"), ("मीरा", "गाय और कुत्तों के लिए मास्क नहीं बनते, बंटी। इनके लिए तो... हवा ही साफ़ करनी पड़ेगी।")]),
  dict(id="e1", dur=10, refs=["cast"], tight=True,
   still="Medium close-up of KABIR in the centre looking straight into the camera with a confident smile, MEERA on his left and BUNTY on his right leaning into the frame; behind them, softly blurred, the smoggy Delhi street at golden hour with rickshaw pullers and street workers now wearing white masks.",
-  action="KABIR looks into the camera and says with a calm smile: \"और मैडम... AQI temperature नहीं होता। पर हाँ — जनता का पारा ज़रूर चढ़ रहा है।\" BUNTY grins and adds: \"नाप लेना!\" MEERA laughs.",
+  action="KABIR looks into the camera and says with a calm smile: \"और मैडम... AQI temperature नहीं होता। पर हाँ — जनता का पारा ज़रूर चढ़ रहा है।\" BUNTY grins and adds: \"नाप लेना!\" MEERA laughs. Important: while KABIR speaks his whole sentence, MEERA and BUNTY stay completely silent and still, with only small smiles — no laughing, giggling, chuckling or any other sound from them until KABIR has finished the entire sentence; only after BUNTY's \"नाप लेना!\" do they all laugh.",
   lines=[("कबीर", "और मैडम... AQI temperature नहीं होता। पर हाँ — जनता का पारा ज़रूर चढ़ रहा है।"), ("बंटी", "नाप लेना!")]),
 ]
