@@ -52,7 +52,7 @@ for s in B.SCENES:
         run("-i", aud, "-t", f"{end:.2f}", "-vn", "-af", ("volume=0.12," if s.get("silent") else "") + tail, "-ac", "2", f"{TMP}/sk_{s['id']}.wav")
     names = [n for n, _ in s["lines"]]
     for i, x in enumerate(tr):   # subtitle text from the script when the line count matches, else what was actually said
-        text = (f"{names[i]} :  {s['lines'][i][1]}" if len(tr) == len(s["lines"]) else x["text"]).replace("...", "…")
+        text = (s["lines"][i][1] if len(tr) == len(s["lines"]) else x["text"]).replace("...", "…")   # spoken words only, no speaker names
         caps.append(dict(text=text, t0=t + x["start"], t1=t + min(x["end"] + 0.3, end)))
     if s.get("chyron"): shots.append(dict(tag=s["chyron"], t0=t, t1=t + min(end, 4.0)))
     punch = t + (max(x["end"] for x in tr) if tr else end) + 0.1
