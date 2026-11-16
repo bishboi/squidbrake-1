@@ -6,6 +6,7 @@ D, SFX, OUT = sys.argv[1:4]
 os.environ["FILM"] = "beats_skit"; sys.argv = [sys.argv[0], D, "-", OUT]
 import render as R                      # text, overlay and compositing helpers
 import beats_skit as B
+if os.environ.get("SKIP"): B.SCENES[:] = [s for s in B.SCENES if s["id"] not in os.environ["SKIP"].split(",")]   # leave scenes out of a shorter cut
 def lufs(path, ss=None, t=None):
     cmd = ["ffmpeg", "-hide_banner", "-nostats"] + (["-ss", f"{ss:.2f}", "-t", f"{t:.2f}"] if ss is not None else []) + ["-i", path, "-vn", "-af", "ebur128", "-f", "null", "-"]
     m = __import__("re").findall(r"I:\s+(-?[\d.]+) LUFS", subprocess.run(cmd, capture_output=True, text=True).stderr); return float(m[-1]) if m else -30.0
@@ -21,7 +22,9 @@ def iso_audio(sid):
 TMP = R.TMP; os.makedirs(TMP, exist_ok=True); run, probe = R.run, R.probe
 OUTRO = json.load(open(f"{D}/outro.json")) if os.path.exists(f"{D}/outro.json") else None
 TAIL = (0.8 + OUTRO["speech"][1] + 3.2) if OUTRO else 5.5; INTRO = 3.4; XFD = 0.3; t = INTRO - XFD; caps = []; shots = []; segs = []; cues = []; hope_at = None
+SKIP = set(filter(None, os.environ.get("SKIP", "").split(",")))   # scenes left out of this cut
 for s in B.SCENES:
+    if s["id"] in SKIP: continue
     clip = f"{D}/clip_{s['id']}.mp4"; tr = json.load(open(f"{D}/tr_{s['id']}.json")) if os.path.exists(f"{D}/tr_{s['id']}.json") else []
     d = float(probe(clip, "format=duration")); end = min(d - 0.05, max(x["end"] for x in tr) + 1.7) if tr and s["lines"] else d - 0.05
     nxt = json.load(open(f"{D}/nxt_{s['id']}.json"))["next_start"] if os.path.exists(f"{D}/nxt_{s['id']}.json") else None

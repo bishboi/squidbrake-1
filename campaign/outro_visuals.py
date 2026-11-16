@@ -10,6 +10,8 @@ def make(D, TMP, R, t, o):
     VO0 = 0.8; L = VO0 + o["speech"][1] + 3.2; o0 = t + VO0; XF = 0.4
     e1d = float(probe(f"{D}/clip_e1.mp4", "format=duration"))
     plan = [("m1", 0.4, 4.6), ("bjp", 1.0, 4.6), ("d2", 0.6, 4.6), ("m2", 0.8, 4.6), ("e1", max(0.0, e1d - 5.2), 5.0)]
+    skip = set(filter(None, os.environ.get("SKIP", "").split(","))); alt = iter([("rl", 0.5, 4.6), ("c1", 2.0, 4.6), ("g1a", 0.5, 4.6)])
+    plan = [p if p[0] not in skip else next(alt) for p in plan]   # background shots follow the cut
     pad = max(0.0, L - (sum(p[2] for p in plan) - XF * (len(plan) - 1)))
     files = []
     for i, (cid, ss, dur) in enumerate(plan):
