@@ -7,20 +7,23 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 def make(D, TMP, R, t, o):
     """t = start of the outro on the film timeline. Returns (video_path, length, titles, voice_start)"""
     run, probe, W, H, F = R.run, R.probe, R.W, R.H, R.F
-    VO0 = 0.8; L = VO0 + o["speech"][1] + 2.2; o0 = t + VO0; XF = 0.4
+    VO0 = 0.8; L = VO0 + o["speech"][1] + 3.2; o0 = t + VO0; XF = 0.4
     e1d = float(probe(f"{D}/clip_e1.mp4", "format=duration"))
-    pieces = [("m1", 0.4, 4.8, 0.0), ("bjp", 1.0, 4.8, 0.0), ("e1", max(0.0, e1d - 5.2), 5.0, max(0.0, L - (4.8 + 4.8 + 5.0 - 2 * XF)))]
+    plan = [("m1", 0.4, 4.6), ("bjp", 1.0, 4.6), ("d2", 0.6, 4.6), ("m2", 0.8, 4.6), ("e1", max(0.0, e1d - 5.2), 5.0)]
+    pad = max(0.0, L - (sum(p[2] for p in plan) - XF * (len(plan) - 1)))
     files = []
-    for i, (cid, ss, dur, pad) in enumerate(pieces):
-        f = f"{TMP}/sk_outro_p{i}.mp4"; vf = f"scale={W}:{H}:flags=lanczos,fps={R.FPS},setsar=1" + (f",tpad=stop_mode=clone:stop_duration={pad:.2f}" if pad else "") + ",format=yuv420p"
+    for i, (cid, ss, dur) in enumerate(plan):
+        f = f"{TMP}/sk_outro_p{i}.mp4"; vf = f"scale={W}:{H}:flags=lanczos,fps={R.FPS},setsar=1" + (f",tpad=stop_mode=clone:stop_duration={pad:.2f}" if i == len(plan) - 1 and pad else "") + ",format=yuv420p"
         run("-ss", f"{ss:.2f}", "-t", f"{dur:.2f}", "-i", f"{D}/clip_{cid}.mp4", "-an", "-vf", vf, "-c:v", "libx264", "-preset", "veryfast", "-crf", "14", f); files.append(f)
-    off1 = pieces[0][2] - XF; off2 = off1 + pieces[1][2] - XF; vid = f"{TMP}/sk_outro_v.mp4"
-    run("-i", files[0], "-i", files[1], "-i", files[2], "-filter_complex", f"[0:v][1:v]xfade=transition=fade:duration={XF}:offset={off1:.2f}[a];[a][2:v]xfade=transition=fade:duration={XF}:offset={off2:.2f}[v]",
-        "-map", "[v]", "-c:v", "libx264", "-preset", "veryfast", "-crf", "14", "-pix_fmt", "yuv420p", vid)
+    fl = []; prev = "[0:v]"; acc = plan[0][2]
+    for i in range(1, len(plan)):
+        fl.append(f"{prev}[{i}:v]xfade=transition=fade:duration={XF}:offset={acc - XF:.2f}[x{i}]"); prev = f"[x{i}]"; acc += plan[i][2] - XF
+    vid = f"{TMP}/sk_outro_v.mp4"
+    run(*[a for p in files for a in ("-i", p)], "-filter_complex", ";".join(fl), "-map", prev, "-c:v", "libx264", "-preset", "veryfast", "-crf", "14", "-pix_fmt", "yuv420p", vid)
     # ---- overlays ----
     wt = {}
     for text, a, b in o["words"]:
-        for key, names in (("join", ("जुड़िए", "जुड़िए।")), ("mask", ("mask", "मास्क")), ("aware", ("जागरूक",)), ("breath", ("सांस", "साँस")), ("poll", ("pollution", "पॉल्यूशन")), ("nsui", ("NSUI", "एन"))):
+        for key, names in (("join", ("जुड़िए", "जुड़िए।")), ("mask", ("mask", "मास्क")), ("aware", ("जागरूक",)), ("breath", ("सांस", "साँस")), ("poll", ("pollution", "पॉल्यूशन")), ("help", ("helpline", "हेल्पलाइन")), ("miss", ("missed",)), ("nsui", ("NSUI", "एन"))):
             if key not in wt and text.strip(" ,।.").lower() in [n.lower() for n in names]: wt[key] = a
     g = lambda k, d: o0 + wt.get(k, d)
     NAVY, SAFF, WH, GR = (11, 38, 102, 228), R.SAFFRON, R.WHITE, R.GREEN
@@ -40,9 +43,14 @@ def make(D, TMP, R, t, o):
     for key, text, y, dflt in (("join", "जुड़िए", 300, 3.1), ("mask", "मास्क बाँटिए", 440, 5.1), ("aware", "जागरूक कीजिए", 580, 6.1)):
         T.append(dict(layer=chip(text, y), t0=g(key, dflt) - 0.05, t1=lock + 0.3, fi=0.35, fo=0.4))
     T.append(dict(layer=Image.new("RGBA", (W, H), (0, 0, 0, 175)), t0=lock, t1=end_t, fi=0.8, fo=0.5))
-    po = poster("let-delhi-breathe", 760); T.append(dict(layer=shadowed(po, (230, 150)), t0=lock + 0.15, t1=end_t, fi=0.8, fo=0.5)); cx = 1390
-    T.append(dict(layer=shift(R.text_layer([("साँस लेना", F(R.SER, 112), WH), ("हमारा हक़ है", F(R.SER, 112), GR)], 150), cx - W // 2), t0=lock + 0.3, t1=end_t, fi=0.7, fo=0.5))
-    pl = R.text_layer([("Pollution पर Solution", F(R.BIG, 66), WH)], 500); ImageDraw.Draw(pl).rounded_rectangle([cx - 300, 600, cx + 300, 610], 5, fill=SAFF); T.append(dict(layer=shift(pl, cx - W // 2), t0=g("poll", 9.3) - 0.1, t1=end_t, fi=0.5, fo=0.5))
-    em2, emm2 = emblem(190); fin = Image.new("RGBA", (W, H), (0, 0, 0, 0)); fin.paste(em2, (cx - 95, 626), emm2)
-    ht = R.text_layer([("#LetDelhiBreathe     #PollutionParSolution", F(R.CAP, 42), WH)], 828); fin = Image.alpha_composite(fin, shift(ht, cx - W // 2 - 0)); T.append(dict(layer=fin, t0=g("nsui", 10.8) - 0.1, t1=end_t, fi=0.6, fo=0.5))
+    po = poster("let-delhi-breathe", 640); T.append(dict(layer=shadowed(po, (250, 165)), t0=lock + 0.15, t1=end_t, fi=0.8, fo=0.5)); cx = 1390
+    T.append(dict(layer=shift(R.text_layer([("साँस लेना", F(R.SER, 96), WH), ("हमारा हक़ है", F(R.SER, 96), GR)], 95), cx - W // 2), t0=lock + 0.3, t1=end_t, fi=0.7, fo=0.5))
+    pl = R.text_layer([("Pollution पर Solution", F(R.BIG, 58), WH)], 392); ImageDraw.Draw(pl).rounded_rectangle([cx - 280, 484, cx + 280, 493], 5, fill=SAFF); T.append(dict(layer=shift(pl, cx - W // 2), t0=g("poll", 9.3) - 0.1, t1=end_t, fi=0.5, fo=0.5))
+    # helpline block: emblem + number pill, shown while the helpline is announced and kept to the end
+    hl = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(hl); em2, emm2 = emblem(150); hl.paste(em2, (930, 532), emm2)
+    d.rounded_rectangle([1110, 520, 1860, 690], 24, fill=NAVY); d.rounded_rectangle([1110, 520, 1126, 690], 8, fill=SAFF)
+    R.mtext(d, 1493, 530, "पॉल्यूशन हेल्पलाइन", F(R.BIG, 38), (255, 255, 255, 235)); R.mtext(d, 1493, 578, "8875833833", F(R.BIG, 92), WH)
+    T.append(dict(layer=hl, t0=g("help", 13.2) - 0.1, t1=end_t, fi=0.6, fo=0.5))
+    how = R.text_layer([("मिस्ड कॉल दें   |   WhatsApp करें", F(R.CAP, 44), WH)], 706); T.append(dict(layer=shift(how, cx - W // 2 + 85), t0=g("miss", 14.3) - 0.2, t1=end_t, fi=0.5, fo=0.5))
+    ht = R.text_layer([("#LetDelhiBreathe     #PollutionParSolution", F(R.CAP, 38), WH)], 790); T.append(dict(layer=shift(ht, cx - W // 2), t0=g("nsui", 21.9) - 0.1, t1=end_t, fi=0.6, fo=0.5))
     return vid, L, T, o0

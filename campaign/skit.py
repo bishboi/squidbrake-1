@@ -20,7 +20,7 @@ def iso_audio(sid):
     open(f"{D}/_iso_{sid}.mp3", "wb").write(r.content); run("-i", f"{D}/_iso_{sid}.mp3", "-ac", "1", "-ar", "44100", out); return out
 TMP = R.TMP; os.makedirs(TMP, exist_ok=True); run, probe = R.run, R.probe
 OUTRO = json.load(open(f"{D}/outro.json")) if os.path.exists(f"{D}/outro.json") else None
-TAIL = (0.8 + OUTRO["speech"][1] + 2.2) if OUTRO else 5.5; INTRO = 3.4; XFD = 0.3; t = INTRO - XFD; caps = []; shots = []; segs = []; cues = []; hope_at = None
+TAIL = (0.8 + OUTRO["speech"][1] + 3.2) if OUTRO else 5.5; INTRO = 3.4; XFD = 0.3; t = INTRO - XFD; caps = []; shots = []; segs = []; cues = []; hope_at = None
 for s in B.SCENES:
     clip = f"{D}/clip_{s['id']}.mp4"; tr = json.load(open(f"{D}/tr_{s['id']}.json")) if os.path.exists(f"{D}/tr_{s['id']}.json") else []
     d = float(probe(clip, "format=duration")); end = min(d - 0.05, max(x["end"] for x in tr) + 1.7) if tr and s["lines"] else d - 0.05

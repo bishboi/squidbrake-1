@@ -132,7 +132,7 @@ def composite(base, out, caps, titles, total, only=None, shots=()):
                 if i not in capl:
                     f = F(CAP, 50); ls = wrap(c["text"], f, 1500); capl[i] = text_layer([(l, f, WHITE) for l in ls], H - 96 - 72 * len(ls))
                 paste(fr, capl[i], a)
-        g = min(1, t / 2.0, (total - t) / 2.5)
+        g = min(1, t / 2.0, (total - t) / 1.0)
         if g < 1: fr = Image.blend(black, fr, max(0, g))
         if only is not None: fr.save(f"{TMP}/prev_{fi / FPS:.1f}.jpg", quality=88)
         else: enc.stdin.write(fr.tobytes())
