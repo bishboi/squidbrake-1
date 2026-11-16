@@ -26,9 +26,9 @@ for s in B.SCENES:
         # 1) normalise the scene with the re-voiced lines muted, 2) lay the converted lines on top at an exact level relative to the other voices
         gate = "+".join([f"between(t,{w['start']:.2f},{w['end']:.2f})" for w, _ in swaps] + [f"between(t,{a:.2f},{b:.2f})" for a, b in s.get("mute", [])]); bg = f"{TMP}/sk_{s['id']}_bg.wav"
         run("-i", clip, "-t", f"{end:.2f}", "-vn", "-af", f"volume=enable='{gate}':volume=0,{tail}", "-ac", "2", bg)
-        groups = [g for g, _ in __import__("itertools").groupby(x[0] for x in s["lines"])]; ins = []; fl = []; outs = []
+        ins = []; fl = []; outs = []
         for j, (w, mp3) in enumerate(swaps):
-            who = groups[int(mp3.rsplit("_", 1)[1][:-4])]
+            who = s["lines"][int(mp3.rsplit("_", 1)[1][:-4])][0]
             oth = [lufs(bg, x["start"], x["end"] - x["start"]) for (n, _), x in zip(s["lines"], tr) if n != who and x["end"] - x["start"] > 0.8] if tr else []
             ref = (max(oth) + 5.0) if oth else (-12.0 if who == "कबीर" else -14.0)    # lead: 5 dB above the loudest other voice in the scene
             gain = max(-6.0, min(20.0, ref - lufs(mp3))); ins += ["-i", mp3]
@@ -36,7 +36,7 @@ for s in B.SCENES:
         fl.append("[0:a]" + "".join(outs) + f"amix=inputs={len(swaps) + 1}:normalize=0:duration=first,alimiter=limit=0.97:level=0[o]")
         run("-i", bg, *ins, "-filter_complex", ";".join(fl), "-map", "[o]", "-ac", "2", f"{TMP}/sk_{s['id']}.wav")
     else:
-        run("-i", clip, "-t", f"{end:.2f}", "-vn", "-af", tail, "-ac", "2", f"{TMP}/sk_{s['id']}.wav")
+        run("-i", clip, "-t", f"{end:.2f}", "-vn", "-af", ("volume=0.12," if s.get("silent") else "") + tail, "-ac", "2", f"{TMP}/sk_{s['id']}.wav")
     names = [n for n, _ in s["lines"]]
     for i, x in enumerate(tr):   # subtitle text from the script when the line count matches, else what was actually said
         text = (f"{names[i]} :  {s['lines'][i][1]}" if len(tr) == len(s["lines"]) else x["text"]).replace("...", "…")

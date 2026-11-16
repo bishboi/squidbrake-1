@@ -16,7 +16,7 @@ def clip(s):
         body = {"model": os.environ.get("VIDEO_MODEL", "google/gemini-omni-1.2-flash"), "prompt": B.RULES + (B.VOICES if s["lines"] else "") + s["action"], "duration": min(s["dur"], int(os.environ.get("MAX_DUR", 99))), "resolution": os.environ.get("VIDEO_RES", "1080p"),
                 "aspect_ratio": "16:9", "generate_audio": True, "frame_images": [{"type": "image_url", "frame_type": "first_frame",
                 "image_url": {"url": "data:image/jpeg;base64," + base64.b64encode(b.getvalue()).decode()}}]}
-        for attempt in range(3):
+        for attempt in range(int(os.environ.get("TRIES", 3))):
             try:
                 j = requests.post(API + "/videos", headers=H, json=body, timeout=180).json()
                 if "id" not in j: raise RuntimeError(str(j)[:300])
@@ -25,7 +25,7 @@ def clip(s):
                     if st.get("status") in ("completed", "failed", "cancelled", "expired"): break
                 if st.get("status") != "completed": raise RuntimeError(str(st)[:300])
                 r = requests.get(f"{API}/videos/{j['id']}/content?index=0", headers=H, timeout=300); r.raise_for_status(); open(out, "wb").write(r.content); break
-            except Exception as e: print("retry clip", s["id"], str(e)[:200], flush=True)
+            except Exception as e: print("retry clip", s["id"], attempt + 1, str(e)[:80], flush=True)
     tj = f"{D}/tr_{s['id']}.json"
     if os.path.exists(out) and not os.path.exists(tj):   # what was actually said, with timings, for subtitles and checking
         wav = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", out, "-ac", "1", "-ar", "16000", "-f", "wav", "-"], capture_output=True).stdout

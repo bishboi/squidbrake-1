@@ -76,9 +76,9 @@ def make_titles(total):
     T.append(dict(layer=card, t0=t0 + 0.3, t1=total + 1, fi=1.0, fo=0.5))
     txt = Image.new("RGBA", (W, H), (0, 0, 0, 0)); cx = px + po.width + (W - px - po.width) // 2 - 40
     tl = text_layer([("दिल्ली को", F(SER, 120), WHITE), ("साँस लेने दो", F(SER, 120), GREEN), ("Pollution पर Solution", F(BIG, 60), WHITE)], 190)
-    txt.paste(tl, (cx - W // 2, 0), tl); ImageDraw.Draw(txt).rounded_rectangle([cx - 230, 652, cx + 230, 662], 5, fill=SAFFRON)
-    em = Image.open(f"{HERE}/brand/nsui-emblem.png").convert("RGB").resize((230, 230), Image.LANCZOS); cm = Image.new("L", (230, 230), 0)
-    ImageDraw.Draw(cm).ellipse([2, 2, 227, 227], fill=255); txt.paste(em, (cx - 115, 720), cm)
+    txt.paste(tl, (cx - W // 2, 0), tl); ImageDraw.Draw(txt).rounded_rectangle([cx - 230, 636, cx + 230, 646], 5, fill=SAFFRON)
+    em = Image.open(f"{HERE}/brand/nsui-emblem.png").convert("RGB").resize((190, 190), Image.LANCZOS); cm = Image.new("L", (190, 190), 0)
+    ImageDraw.Draw(cm).ellipse([2, 2, 187, 187], fill=255); txt.paste(em, (cx - 95, 672), cm)
     T.append(dict(layer=txt, t0=t0 + 1.2, t1=total + 1, fi=1.0, fo=0.5))
     return T
 

@@ -98,8 +98,9 @@ person or photo. The film opens on a card saying it is fictional satire with AI-
 before release, and follow the Election Commission's rules on labelling synthetic content.
 The lead's lines are re-voiced into the lead's own cloned ElevenLabs voice (his consent, his account) with `voice_swap.py`, which keeps
 the generated lip-sync, and the Chief Minister's lines are converted into a separate stock female voice; every other character keeps a
-generated voice. The lead is built from three reference photos of him (cast sheet in `brand/skit-cast.png`), and the shots are generated with Kling v3 Pro,
-which held his face most steadily in a side-by-side test against Wan 3.0 (Gemini Omni 1.2 was failing that day). The lead's converted lines are mixed 5 dB above the loudest other voice in each scene. Each CM line is its own shot,
+generated voice. The lead is built from three reference photos of him (cast sheet in `brand/skit-cast.png`) and the shots are generated with
+Gemini Omni 1.1 (the lead speaking scenes need Omni's Hindi: in a blind ranking of the converted voice, Omni came first and Kling last;
+Omni 1.2 itself was down — provider uptime ~20%, even text-only jobs failed — so 1.1 is the best available; Seedance rejects the lead's image as a real person). The lead's converted lines are mixed 5 dB above the loudest other voice in each scene. Each CM line is its own shot,
 so only the person speaking ever has moving lips.
 Build: `python3 skit_gen.py <dir>` (stills, dialogue clips), `python3 voice_swap.py <dir> <voice_id>` (true line timings via ElevenLabs
 Scribe, then speech-to-speech on the lead's turns), then `python3 skit.py <dir> <sfx_dir> pollution-ka-solution-skit.mp4`.
@@ -206,3 +207,5 @@ film completion rate, and — the only one that finally matters — a written, d
   `python3 render.py <assets_dir> <music.mp3> let-delhi-breathe.mp4`. Change the narrator with `VO_VOICE=<voice>`.
 - Before public release: have a Hindi speaker listen once end to end, confirm the two flagged claims in section 3,
   replace the generated score if you need a licensed track for broadcast, and add the official NSUI logo on the end card.
+
+The film now ends on a short call to action in the lead's own cloned voice (`outro_vo.py`): "हमारे साथ जुड़िए, अपने मोहल्ले में लोगों को मास्क बाँटिए, उन्हें जागरूक कीजिए… Pollution पर Solution, NSUI के साथ आइए।"
