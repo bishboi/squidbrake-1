@@ -58,3 +58,5 @@ for s in B.SCENES:
         if r.status_code != 200: sys.exit(f"{sid}[{i}] {r.status_code} {r.text[:300]}")
         open(out, "wb").write(r.content); json.dump({"start": t0, "end": t1}, open(f"{D}/vs_{sid}_{i}.json", "w")); print("swapped", sid, i, who, f"{t0:.1f}-{t1:.1f}", flush=True)
     json.dump(tr, open(f"{D}/tr_{sid}.json", "w"), ensure_ascii=False)
+    lastb = max((hit[i][1] for i in hit), default=None)   # first word after the last scripted line = start of any ad-lib; the scene is cut before it
+    json.dump({"next_start": (words[lastb + 1]["start"] if lastb is not None and lastb + 1 < len(words) else None)}, open(f"{D}/nxt_{sid}.json", "w"))

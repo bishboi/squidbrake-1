@@ -11,17 +11,19 @@ def lufs(path, ss=None, t=None):
     m = __import__("re").findall(r"I:\s+(-?[\d.]+) LUFS", subprocess.run(cmd, capture_output=True, text=True).stderr); return float(m[-1]) if m else -30.0
 TMP = R.TMP; os.makedirs(TMP, exist_ok=True); run, probe = R.run, R.probe
 OUTRO = json.load(open(f"{D}/outro.json")) if os.path.exists(f"{D}/outro.json") else None
-TAIL = max(5.5, OUTRO["duration"] + 2.6) if OUTRO else 5.5; INTRO = 3.4; t = INTRO; caps = []; shots = []; segs = []; cues = []; hope_at = None
+TAIL = max(5.5, OUTRO["duration"] + 2.6) if OUTRO else 5.5; INTRO = 3.4; XFD = 0.3; t = INTRO - XFD; caps = []; shots = []; segs = []; cues = []; hope_at = None
 for s in B.SCENES:
     clip = f"{D}/clip_{s['id']}.mp4"; tr = json.load(open(f"{D}/tr_{s['id']}.json")) if os.path.exists(f"{D}/tr_{s['id']}.json") else []
     d = float(probe(clip, "format=duration")); end = min(d - 0.05, max(x["end"] for x in tr) + 1.7) if tr and s["lines"] else d - 0.05
+    nxt = json.load(open(f"{D}/nxt_{s['id']}.json"))["next_start"] if os.path.exists(f"{D}/nxt_{s['id']}.json") else None
+    if tr and s["lines"] and nxt: end = min(end, max(max(x["end"] for x in tr) + 0.12, nxt - 0.04))   # never cut into an unscripted word
     if s.get("cut"): end = min(end, s["cut"])
-    if s.get("tight") and tr: end = min(end, max(x["end"] for x in tr) + 0.4)   # stop right after the last scripted line (clip may run on)
+    if s.get("tight") and tr: end = min(end, max(x["end"] for x in tr) + 0.5)   # stop right after the last scripted line (clip may run on)
     last = s is B.SCENES[-1]; seg = f"{TMP}/sk_{s['id']}.mp4"
     run("-i", clip, "-t", f"{end:.2f}", "-vf", f"scale={R.W}:{R.H}:flags=lanczos,fps={R.FPS},setsar=1" + (f",tpad=stop_mode=clone:stop_duration={TAIL}" if last else "") + ",format=yuv420p",
         "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "14", seg)
     swaps = [(json.load(open(p)), p[:-5] + ".mp3") for p in sorted(__import__("glob").glob(f"{D}/vs_{s['id']}_*.json"))]   # lead lines re-voiced by voice_swap.py
-    tail = "loudnorm=I=-15:TP=-1.5:LRA=11,aresample=48000,afade=t=in:d=0.05,afade=t=out:st=%.2f:d=0.15" % (end - 0.15)
+    tail = "loudnorm=I=-15:TP=-1.5:LRA=11,aresample=48000,afade=t=in:d=0.12,afade=t=out:st=%.2f:d=%.2f" % (end - XFD, XFD)
     if swaps:
         # 1) normalise the scene with the re-voiced lines muted, 2) lay the converted lines on top at an exact level relative to the other voices
         gate = "+".join([f"between(t,{w['start']:.2f},{w['end']:.2f})" for w, _ in swaps] + [f"between(t,{a:.2f},{b:.2f})" for a, b in s.get("mute", [])]); bg = f"{TMP}/sk_{s['id']}_bg.wav"
@@ -49,14 +51,17 @@ for s in B.SCENES:
         elif k == "scratch": cues.append(("scratch", punch - 0.1, 0.8))
         elif k == "laugh": cues.append(("laugh", punch + (0.35 if "boom" in s["sfx"] else 0.1), 0.75))
     if s.get("music") == "hope": hope_at = t
-    segs.append((s["id"], t, end)); t += end
+    segs.append((s["id"], t, end)); t += end - (0 if last else XFD)
 run("-f", "lavfi", "-i", f"color=c=black:s={R.W}x{R.H}:r={R.FPS}:d={INTRO}", "-vf", "format=yuv420p", "-c:v", "libx264", "-preset", "veryfast", "-crf", "14", f"{TMP}/sk_intro.mp4")
 asegs = list(segs)
 if OUTRO:   # closing call to action in the lead's voice, over the end card
     o0 = t + 1.3; run("-i", f"{D}/outro.mp3", "-af", "loudnorm=I=-13:TP=-1.5:LRA=7,aresample=48000,afade=t=in:d=0.05", "-ac", "2", f"{TMP}/sk_outro.wav")
     asegs.append(("outro", o0, OUTRO["duration"])); caps += [dict(text=x["text"], t0=o0 + x["start"], t1=o0 + x["end"]) for x in OUTRO["subs"]]
-total = t + TAIL; open(f"{TMP}/sk.txt", "w").write(f"file '{TMP}/sk_intro.mp4'\n" + "".join(f"file '{TMP}/sk_{i}.mp4'\n" for i, _, _ in segs))
-run("-f", "concat", "-safe", "0", "-i", f"{TMP}/sk.txt", "-c", "copy", f"{TMP}/sk_base.mp4")
+total = t + TAIL
+vin = [f"{TMP}/sk_intro.mp4"] + [f"{TMP}/sk_{i}.mp4" for i, _, _ in segs]; starts = [0.0] + [t0 for _, t0, _ in segs]; fl = []; prev = "[0:v]"
+for i in range(1, len(vin)):
+    fl.append(f"{prev}[{i}:v]xfade=transition=fade:duration={XFD}:offset={starts[i]:.3f}[x{i}]"); prev = f"[x{i}]"
+run(*[a for p in vin for a in ("-i", p)], "-filter_complex", ";".join(fl), "-map", prev, "-c:v", "libx264", "-preset", "veryfast", "-crf", "14", "-pix_fmt", "yuv420p", f"{TMP}/sk_base.mp4")
 R.BEATS[:] = [dict(id="end", end=True, t0=t + 0.3, d=0.0)]; titles = R.make_titles(total)
 # opening disclaimer: the skit names real office-holders, so say plainly that it is fiction
 from PIL import Image
