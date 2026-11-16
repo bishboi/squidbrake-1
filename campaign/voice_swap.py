@@ -8,7 +8,7 @@ import beats_skit as B
 D, LEAD_VOICE = sys.argv[1], sys.argv[2]; CM_VOICE = os.environ.get("CM_VOICE", "XrExE9yKIg1WjnnlVkGX")
 VOICES = {"कबीर": LEAD_VOICE, "मुख्यमंत्री": CM_VOICE}; H = {"xi-api-key": os.environ.get("ELEVENLABS_API_KEY", "proxy-injected")}
 dur = lambda p: float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", p], capture_output=True, text=True).stdout)
-ALIAS = {"स्विट्जरलैंड": "switzerland", "मैडम": "madam", "अंकल": "uncle"}
+ALIAS = {"पॉल्यूशन": "pollution", "स्विट्जरलैंड": "switzerland", "मैडम": "madam", "अंकल": "uncle"}
 def norm(t):
     x = "".join(c for c in unicodedata.normalize("NFC", t).replace("\u093c", "").replace("\u0901", "\u0902").lower() if unicodedata.category(c)[0] not in "PSZC"); return ALIAS.get(x, x)
 def toks(t): return [x for x in (norm(w) for w in t.split()) if x]
