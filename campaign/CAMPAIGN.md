@@ -230,3 +230,13 @@ File: `campaign/red-light-guidelines.mp4` · script: `campaign/beats_redlight.py
 At the red light in front of the BJP headquarters the students hand out masks and give drivers four things every citizen can do:
 1. switch the engine off at the red light, 2. use metro, bus or carpool, 3. get the PUC check and service done on time,
 4. never burn waste or leaves, and wear a mask outdoors. It ends on the helpline call to action (8875833833).
+
+## 3e. Cartoon satire — "ज़िम्मेदारी का तकिया" (1 min 8 sec)
+
+File: `campaign/zimmedari-ka-takiya-cartoon.mp4` · script: `campaign/beats_cartoon.py` (`SKIT=beats_cartoon`).
+A coughing Delhi citizen asks who will take responsibility; a BJP caricature throws a pillow marked ज़िम्मेदारी ("Punjab's stubble, their government")
+and an AAP caricature throws it back ("Delhi and the Centre are yours"), over and over. The two politicians are invented generic cartoon figures, not likenesses of real people.
+
+The red-light film (3d) now also has the lead's mask-off monologue: where the government is (PM in the Philippines for the ASEAN summits, the
+Environment Minister in Türkiye for COP31 — both checked against news reports on 16 Nov 2026), then "Solution simple है" with five things
+the government should do: act on polluting factories all year, control dust and burning landfills, add buses and metro, give farmers machines and a fair price, and stop sewage and industrial waste entering the Yamuna.
