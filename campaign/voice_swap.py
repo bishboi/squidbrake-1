@@ -89,32 +89,23 @@ def patch_phrase(path, voice, phrase, context):
 RETIME = {("pm1", 1)}   # lines the video model mispronounces: spoken afresh by text-to-speech in the same voice, then warped word by word to the video's timing
 
 def retime_line(path, voice, text):
-    """replace the converted line with a TTS read of `text` in `voice`, time-warped so each matched word lands where the original word was (keeps lip-sync roughly intact)"""
-    clean_text = re.sub(r"\s*(\.\.\.|—)\s*", ", ", text)
+    """replace the converted line with a fresh text-to-speech read of `text` in `voice` (correct pronunciation, natural flow),
+    trimmed to its words and stretched ONCE to the duration of the line it replaces, so it stays roughly in sync with the lips"""
+    clean_text = re.sub(r"\s*(\.\.\.|\u2014)\s*", ", ", text)
     tts = path + ".tts.mp3"
     r = requests.post(f"https://api.elevenlabs.io/v1/text-to-speech/{voice}?output_format=mp3_44100_128", headers=H, timeout=200,
         json={"text": clean_text, "model_id": "eleven_v3", "voice_settings": {"stability": 0.5, "similarity_boost": 0.85, "style": 0.2, "use_speaker_boost": True}}); r.raise_for_status(); open(tts, "wb").write(r.content)
-    w1, w2 = words_of(path), words_of(tts); n1, n2 = [norm(w["text"]) for w in w1], [norm(w["text"]) for w in w2]
-    sm = difflib.SequenceMatcher(None, n1, n2, autojunk=False); pairs = []
-    for blk in sm.get_matching_blocks():
-        for k in range(blk.size): pairs.append((w1[blk.a + k], w2[blk.b + k]))
-    if len(pairs) < max(3, len(n1) // 2): print("retime: too few matching words", len(pairs), "of", len(n1), flush=True); return False
-    d1, d2 = dur(path), dur(tts); anchors = [(0.0, 0.0)]
-    for a, b in pairs:
-        for t1, t2 in ((a["start"], b["start"]), (a["end"], b["end"])):
-            if t1 > anchors[-1][0] + 0.02 and t2 > anchors[-1][1] + 0.02: anchors.append((t1, t2))
-    anchors.append((d1, d2)); parts = []; fl = []
-    for k in range(len(anchors) - 1):
-        (a1, a2), (b1, b2) = anchors[k], anchors[k + 1]; L1, L2 = b1 - a1, b2 - a2
-        if L1 < 0.02 or L2 < 0.02: continue
-        ratio = max(0.6, min(1.8, L2 / L1)); i = len(parts)
-        fl.append(f"[0:a]atrim={a2:.3f}:{b2:.3f},asetpts=PTS-STARTPTS,atempo={ratio:.4f},apad=whole_dur={L1:.3f},atrim=0:{L1:.3f},afade=t=in:d=0.004,afade=t=out:st={max(0.0, L1 - 0.004):.3f}:d=0.004[p{i}]"); parts.append(f"[p{i}]")   # padded/trimmed to the original slot so later words stay on the video's timing
-    fl.append("".join(parts) + f"concat=n={len(parts)}:v=0:a=1[o]"); tmp = path + ".rt.mp3"
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", tts, "-filter_complex", ";".join(fl), "-map", "[o]", "-ar", "44100", "-b:a", "128k", tmp], check=True)
+    w1, w2 = words_of(path), words_of(tts)
+    if not w1 or not w2: print("retime: no words", flush=True); return False
+    s1, e1_ = w1[0]["start"], w1[-1]["end"]; s2, e2_ = w2[0]["start"], w2[-1]["end"]
+    ratio = max(0.8, min(1.25, (e2_ - s2) / (e1_ - s1))); head = max(0.0, s2 - 0.05); tmp = path + ".rt.mp3"
+    lead = max(0.0, s1 - 0.05)    # keep the original lead-in so the line starts where the original words did
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", f"{head:.3f}", "-t", f"{e2_ - head + 0.15:.3f}", "-i", tts, "-af", f"atempo={ratio:.4f},adelay={int(lead * 1000)}:all=1,aresample=44100", "-b:a", "128k", tmp], check=True)
     def lu(p):
         m = re.findall(r"I:\s+(-?[\d.]+) LUFS", subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-i", p, "-af", "ebur128", "-f", "null", "-"], capture_output=True, text=True).stderr); return float(m[-1]) if m else -23.0
     g = max(-10.0, min(10.0, lu(path) - lu(tmp))); out2 = path + ".rt2.mp3"
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", tmp, "-af", f"volume={g:.1f}dB", "-b:a", "128k", out2], check=True); os.replace(out2, path); print(f"retimed ({len(pairs)}/{len(n1)} words matched, {len(parts)} segments, {g:.1f} dB)", flush=True); return True
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", tmp, "-af", f"volume={g:.1f}dB", "-b:a", "128k", out2], check=True); os.replace(out2, path); os.remove(tmp)
+    print(f"retimed whole line: tempo x{ratio:.2f}, {g:.1f} dB", flush=True); return True
 
 def clean(path, t0):
     """trim the converted line to its words (+ a short tail) and turn down breaths / stray sounds in the pauses; returns the new start time"""

@@ -73,7 +73,7 @@ It is clearly labelled as fiction on screen ("काल्पनिक भवि
 sourcing. Best used as the second release, a week after the first film, and as the opener at campus screenings.
 Build: `FILM=beats2126 python3 gen_assets.py <dir> vo stills videos`, then `FILM=beats2126 python3 render.py <dir> <music.mp3> delhi-2126.mp4`.
 
-## 3c. Comedy skit — "Pollution का Solution — एक खोज" (2 min 55 sec)
+## 3c. Comedy skit — "Pollution का Solution — एक खोज" (3 min 8 sec)
 
 File: `campaign/pollution-ka-solution-skit.mp4` · script: `campaign/beats_skit.py` · cast and T-shirt references: `campaign/brand/`
 
@@ -219,3 +219,5 @@ The Chief Minister's office is one fixed room (reference in `brand/skit-office.p
 Two shots (the auto-rickshaw exchange and the Jantar Mantar / "फिर से नहीं" scene) are generated with MiniMax Hailuo 3 (2K, up to 15 s per clip), so the Jantar Mantar beat is one continuous shot instead of two stitched clips; the rest use Gemini Omni 1.1 (best Hindi in the blind test). Prompts name each person by position and appearance, because the video model otherwise reshuffles people.
 
 Helpline: the closing voice-over and the end card give the pollution helpline, **8875833833** — send support or queries by missed call or WhatsApp. The number is spoken digit by digit in the lead's voice, shown in a large block with both options, and held on screen to the end (set in `outro_vo.py` and `outro_visuals.py`).
+
+Latest changes: the lead has a refined, cleaner look (reference in `brand/lead-portrait.png`, new cast sheet), the students wear masks in all distribution scenes, a new scene has them give Ramlal a mask ("अंकल, आप भी मास्क पहन लीजिए। Air purifier तो घर में पड़ा है!"), the helpline number is spoken digit by digit in English, and the Jantar Mantar line is re-spoken whole in the lead's cloned voice with correct pronunciation, stretched once to the shot's timing.
