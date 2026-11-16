@@ -13,7 +13,7 @@ def clip(s):
     if os.environ.get("STILLS_ONLY"): return
     if not os.path.exists(out):
         im = Image.open(still).convert("RGB").resize((1920, 1080), Image.LANCZOS); b = io.BytesIO(); im.save(b, "JPEG", quality=92)
-        body = {"model": os.environ.get("VIDEO_MODEL", "google/gemini-omni-1.2-flash"), "prompt": B.RULES + (B.VOICES if s["lines"] else "") + s["action"], "duration": s["dur"], "resolution": os.environ.get("VIDEO_RES", "1080p"),
+        body = {"model": os.environ.get("VIDEO_MODEL", "google/gemini-omni-1.2-flash"), "prompt": B.RULES + (B.VOICES if s["lines"] else "") + s["action"], "duration": min(s["dur"], int(os.environ.get("MAX_DUR", 99))), "resolution": os.environ.get("VIDEO_RES", "1080p"),
                 "aspect_ratio": "16:9", "generate_audio": True, "frame_images": [{"type": "image_url", "frame_type": "first_frame",
                 "image_url": {"url": "data:image/jpeg;base64," + base64.b64encode(b.getvalue()).decode()}}]}
         for attempt in range(3):

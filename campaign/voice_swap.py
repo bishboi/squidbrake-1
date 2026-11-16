@@ -53,7 +53,7 @@ for s in B.SCENES:
     for k, (g, t) in enumerate(zip(groups, T)):
         out = f"{D}/vs_{sid}_{k}.mp3"
         if g["who"] not in VOICES or os.path.exists(out): continue
-        a = max(t["start"] - 0.12, (T[k - 1]["end"] + 0.03) if k else 0.0); b = min(t["end"] + 0.30, (T[k + 1]["start"] - 0.03) if k + 1 < len(T) else total)
+        a = max(t["start"] - 0.12, (T[k - 1]["end"] + 0.03) if k else 0.0); b = min(t["end"] + 0.55, (T[k + 1]["start"] - 0.03) if k + 1 < len(T) else total)
         wav = f"{D}/_seg.wav"; subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", f"{D}/clip_{sid}.mp4", "-ss", f"{a:.2f}", "-t", f"{b - a:.2f}", "-vn", "-ac", "1", "-ar", "44100", wav], check=True)
         if os.environ.get("STUB"): subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", wav, out], check=True)
         else:

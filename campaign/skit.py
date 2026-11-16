@@ -10,7 +10,8 @@ def lufs(path, ss=None, t=None):
     cmd = ["ffmpeg", "-hide_banner", "-nostats"] + (["-ss", f"{ss:.2f}", "-t", f"{t:.2f}"] if ss is not None else []) + ["-i", path, "-vn", "-af", "ebur128", "-f", "null", "-"]
     m = __import__("re").findall(r"I:\s+(-?[\d.]+) LUFS", subprocess.run(cmd, capture_output=True, text=True).stderr); return float(m[-1]) if m else -30.0
 TMP = R.TMP; os.makedirs(TMP, exist_ok=True); run, probe = R.run, R.probe
-TAIL = 5.5; INTRO = 3.4; t = INTRO; caps = []; shots = []; segs = []; cues = []; hope_at = None
+OUTRO = json.load(open(f"{D}/outro.json")) if os.path.exists(f"{D}/outro.json") else None
+TAIL = max(5.5, OUTRO["duration"] + 2.6) if OUTRO else 5.5; INTRO = 3.4; t = INTRO; caps = []; shots = []; segs = []; cues = []; hope_at = None
 for s in B.SCENES:
     clip = f"{D}/clip_{s['id']}.mp4"; tr = json.load(open(f"{D}/tr_{s['id']}.json")) if os.path.exists(f"{D}/tr_{s['id']}.json") else []
     d = float(probe(clip, "format=duration")); end = min(d - 0.05, max(x["end"] for x in tr) + 1.7) if tr and s["lines"] else d - 0.05
@@ -50,6 +51,10 @@ for s in B.SCENES:
     if s.get("music") == "hope": hope_at = t
     segs.append((s["id"], t, end)); t += end
 run("-f", "lavfi", "-i", f"color=c=black:s={R.W}x{R.H}:r={R.FPS}:d={INTRO}", "-vf", "format=yuv420p", "-c:v", "libx264", "-preset", "veryfast", "-crf", "14", f"{TMP}/sk_intro.mp4")
+asegs = list(segs)
+if OUTRO:   # closing call to action in the lead's voice, over the end card
+    o0 = t + 1.3; run("-i", f"{D}/outro.mp3", "-af", "loudnorm=I=-13:TP=-1.5:LRA=7,aresample=48000,afade=t=in:d=0.05", "-ac", "2", f"{TMP}/sk_outro.wav")
+    asegs.append(("outro", o0, OUTRO["duration"])); caps += [dict(text=x["text"], t0=o0 + x["start"], t1=o0 + x["end"]) for x in OUTRO["subs"]]
 total = t + TAIL; open(f"{TMP}/sk.txt", "w").write(f"file '{TMP}/sk_intro.mp4'\n" + "".join(f"file '{TMP}/sk_{i}.mp4'\n" for i, _, _ in segs))
 run("-f", "concat", "-safe", "0", "-i", f"{TMP}/sk.txt", "-c", "copy", f"{TMP}/sk_base.mp4")
 R.BEATS[:] = [dict(id="end", end=True, t0=t + 0.3, d=0.0)]; titles = R.make_titles(total)
@@ -61,7 +66,7 @@ box.alpha_composite(tl); titles.insert(0, dict(layer=box, t0=0.0, t1=INTRO, fi=0
 R.composite(f"{TMP}/sk_base.mp4", f"{TMP}/sk_video.mp4", caps, titles, total, shots=shots)
 # ---- audio ----
 ins = []; fl = []; n = 0; dia = []
-for sid, t0, end in segs:
+for sid, t0, end in asegs:
     ins += ["-i", f"{TMP}/sk_{sid}.wav"]; fl.append(f"[{n}:a]adelay={int(t0 * 1000)}:all=1[d{n}]"); dia.append(f"[d{n}]"); n += 1
 fl.append("".join(dia) + f"amix=inputs={len(dia)}:normalize=0,apad=whole_dur={total:.2f},asplit=2[dia][sc]")
 ins += ["-stream_loop", "-1", "-i", f"{SFX}/comedy.mp3", "-i", f"{SFX}/hope.mp3"]; c, h = n, n + 1; n += 2
