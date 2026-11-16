@@ -5,7 +5,7 @@ never overlaps a neighbouring word, and saved as vs_<scene>_<line>.mp3/.json (sp
 Usage: python3 voice_swap.py <clips_dir> <lead_voice_id>      (key is injected by the network proxy)"""
 import os, sys, json, re, unicodedata, subprocess, difflib, requests
 import beats_skit as B
-D, LEAD_VOICE = sys.argv[1], sys.argv[2]; CM_VOICE = os.environ.get("CM_VOICE", "ThT5KcBeYPX3keUQqHPh"); CM_PITCH = float(os.environ.get("CM_PITCH", "-1.5"))   # a deeper, warmer female voice for the invented Chief Minister
+D, LEAD_VOICE = sys.argv[1], sys.argv[2]; CM_VOICE = os.environ.get("CM_VOICE", "ThT5KcBeYPX3keUQqHPh"); CM_PITCH = float(os.environ.get("CM_PITCH", "-0.5"))   # a deeper, warmer female voice for the invented Chief Minister
 VOICES = {"कबीर": LEAD_VOICE, "मुख्यमंत्री": CM_VOICE}; H = {"xi-api-key": os.environ.get("ELEVENLABS_API_KEY", "proxy-injected")}
 dur = lambda p: float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", p], capture_output=True, text=True).stdout)
 ALIAS = {"पॉल्यूशन": "pollution", "स्विट्जरलैंड": "switzerland", "मैडम": "madam", "अंकल": "uncle"}
@@ -44,7 +44,7 @@ def align(lines, words):
 def deepen(path):
     """lower the pitch by CM_PITCH semitones (duration unchanged) and add a little warmth"""
     f = 2 ** (CM_PITCH / 12); tmp = path + ".d.mp3"
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", path, "-af", f"asetrate=44100*{f:.4f},aresample=44100,atempo={1 / f:.4f},equalizer=f=180:width_type=o:width=1.5:g=3", "-b:a", "128k", tmp], check=True); os.replace(tmp, path)
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", path, "-af", f"asetrate=44100*{f:.4f},aresample=44100,atempo={1 / f:.4f},equalizer=f=180:width_type=o:width=1.5:g=1.5", "-b:a", "128k", tmp], check=True); os.replace(tmp, path)
 
 def clean(path, t0):
     """trim the converted line to its words (+ a short tail) and turn down breaths / stray sounds in the pauses; returns the new start time"""
