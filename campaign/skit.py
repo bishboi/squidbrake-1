@@ -114,7 +114,7 @@ if os.environ.get("PORTRAIT"):
     f1 = R.F(R.BIG, 66); f2 = R.F(R.CAP, 40); x0 = 270
     R.mtext(d, x0 + R.mlen(d, "Pollution पर Solution", f1) / 2, 252, "Pollution पर Solution", f1, R.WHITE); d.rounded_rectangle([x0, 348, x0 + 420, 356], 4, fill=R.SAFFRON)
     R.mtext(d, x0 + R.mlen(d, "दिल्ली को साँस लेने दो  |  NSUI", f2) / 2, 368, "दिल्ली को साँस लेने दो  |  NSUI", f2, (255, 255, 255, 235))
-    f3 = R.F(R.CAP, 24); R.mtext(d, PW - 60 - R.mlen(d, "काल्पनिक व्यंग्य  |  AI-निर्मित", f3) / 2, VY + VH + 10, "काल्पनिक व्यंग्य  |  AI-निर्मित", f3, (255, 255, 255, 150))
+    f3 = R.F(R.CAP, 24); TAGL = getattr(B, "TAGLINE", "काल्पनिक व्यंग्य  |  AI-निर्मित"); R.mtext(d, PW - 60 - R.mlen(d, TAGL, f3) / 2, VY + VH + 10, TAGL, f3, (255, 255, 255, 150))
     d.rounded_rectangle([70, 1430, PW - 70, 1570], 26, fill=NAVY); d.rounded_rectangle([70, 1430, 86, 1570], 8, fill=R.SAFFRON)
     R.mtext(d, PW // 2 + 8, 1436, "पॉल्यूशन हेल्पलाइन  :  मिस्ड कॉल दें  |  WhatsApp करें", R.F(R.CAP, 32), (255, 255, 255, 235)); R.mtext(d, PW // 2 + 8, 1476, "8875833833", R.F(R.BIG, 70), R.WHITE)
     plate.save(f"{TMP}/pt_plate.png")
